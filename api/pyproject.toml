@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "audit-log-api"
+version = "0.0.1"
+description = ""
+authors = [
+    "thinhsuyluy <ndthinh0201@gmail.com>"
+]
+readme = "README.md"
+packages = [{include = "core"}]
+
+[tool.poetry.dependencies]
+python = "^3.10.0"
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.30.6"}
+pydantic = "2.5.3"
+python-dotenv = "^1.1.1"
+black = "^25.1.0"
+rich = "^14.0.0"
+psycopg2-binary = "^2.9.10"
+sqlalchemy = "^2.0.41"
+databases = "^0.9.0"
+asyncpg = "^0.30.0"
+pyjwt = "^2.10.1"
+passlib = "^1.7.4"
+python-jose = "^3.5.0"
+python-multipart = "^0.0.20"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
