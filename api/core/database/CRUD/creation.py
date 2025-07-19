@@ -62,7 +62,7 @@ class PGCreation:
     async def create_new_tenant(
         self,
         tenant: Tenant
-    ) -> TenantTable:
+    ) -> Tenant:
         try:
             new_tenant = TenantTable(
                 id=tenant.id,
@@ -71,7 +71,7 @@ class PGCreation:
             self.db.add(new_tenant)
             await self.db.commit()
             await self.db.refresh(new_tenant)
-            return new_tenant
+            return tenant
 
         except asyncpg.exceptions.InvalidTextRepresentationError as e:
             logger.error(f"Invalid enum value error when creating log: {traceback.format_exc()}")

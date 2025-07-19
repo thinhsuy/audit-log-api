@@ -44,7 +44,7 @@ class PGRetrieve:
         log_id: str = None,
         is_get_one: bool = False,
     ) -> List[AuditLog]:
-        query  = select(AuditLogTable)
+        query = select(AuditLogTable)
         if tenant_id:
             query.where(AuditLogTable.tenant_id == tenant_id)
         if user_id:
@@ -61,4 +61,26 @@ class PGRetrieve:
         return [
             AuditLog.model_validate(log_table)
             for log_table in result.scalars().all()
+        ]
+
+    async def retrieve_tenants(
+        self,
+        tenant_name: str = None,
+        tenant_id: str = None,
+        is_get_one: bool = False
+    ) -> List[Tenant]:
+        query = select(TenantTable)
+        if tenant_name:
+            query.where(TenantTable.name == tenant_name)
+        if tenant_id:
+            query.where(TenantTable.id == tenant_id)
+        
+        result = await self.db.execute(query)
+        if is_get_one:
+            tenant_table = result.scalar()
+            return Tenant.model_validate(tenant_table) if tenant_table else None
+        
+        return [
+            Tenant.model_validate(tenant_table)
+            for tenant_table in result.scalars().all()
         ]
