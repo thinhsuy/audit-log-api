@@ -2,7 +2,7 @@ from core.config import AUDIT_USER_DB_URL, logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from core.database.schemas import Base
+from core.schemas import Base
 
 async_engine = create_async_engine(
     AUDIT_USER_DB_URL,
@@ -43,3 +43,33 @@ async def dispose_db():
     """Dispose the database."""
     await async_engine.dispose()
 
+    # async def filter_logs(
+    #     self,
+    #     tenant_id: str,
+    #     params: LogFilterParams,
+    #     db: AsyncSession
+    # ) -> List[AuditLogTable]:
+    #     q = select(AuditLogTable).where(AuditLogTable.tenant_id == tenant_id)
+
+    #     if params.start_date:
+    #         q = q.where(AuditLogTable.timestamp >= params.start_date)
+    #     if params.end_date:
+    #         q = q.where(AuditLogTable.timestamp <= params.end_date)
+    #     if params.action_type:
+    #         q = q.where(AuditLogTable.action_type == params.action_type)
+    #     if params.resource_type:
+    #         q = q.where(AuditLogTable.resource_type == params.resource_type)
+    #     if params.severity:
+    #         q = q.where(AuditLogTable.severity == params.severity)
+    #     if params.keyword:
+    #         q = q.where(
+    #             (AuditLogTable.resource_type.ilike(f"%{params.keyword}%")) |
+    #             (cast(AuditLogTable.meta_data, String).ilike(f"%{params.keyword}%"))
+    #         )
+
+    #     q = q.order_by(AuditLogTable.timestamp.desc()) \
+    #          .offset(params.offset) \
+    #          .limit(params.limit)
+
+    #     result = await db.execute(q)
+    #     return result.scalars().all()

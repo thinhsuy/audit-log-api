@@ -1,0 +1,1102 @@
+[
+    {
+        "id": "214202a0-6f11-4eb1-9f3b-2a8789df43b9",
+        "session_id": "ad5bf7e0-cb92-44bf-8a65-401dd58ca184",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-47fc255a-53c7-465d-997f-4b76b8b5a366",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.319705"
+    },
+    {
+        "id": "7cd4b2d8-15b7-46c0-8e42-d642eb95bf58",
+        "session_id": "c242dd57-cd0d-4b0a-bc2d-cc6a13d88f7d",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-45c21169-3dc4-4114-a11f-6fef235387ca",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320027"
+    },
+    {
+        "id": "8ab1006c-8156-46fe-ac1f-f3e79ef0a037",
+        "session_id": "264af13e-b6c7-42ec-8afd-a2bc2c2f38c3",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-9712153d-5bf7-41fb-99c5-8a3475b9f866",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320122"
+    },
+    {
+        "id": "74b29716-d3ff-4db3-83ca-8f44891e2541",
+        "session_id": "6a4b370f-4068-4652-8b8f-a836c0950a9a",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-171c3640-e850-4173-95a7-e4280dcdaa52",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320327"
+    },
+    {
+        "id": "6e3727f5-077f-433b-aa37-97d07023f1f9",
+        "session_id": "ead94609-a33d-4508-b56b-0120194531f1",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-59dcc4eb-7f52-492b-9b53-15cd7407c4a4",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320388"
+    },
+    {
+        "id": "4e5dcfa0-58d5-48a0-a8b6-d795c0b8388a",
+        "session_id": "83c3cd5f-1e18-4fa8-a865-b5638f379568",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-c290f8c9-a64a-4e62-b14f-4dd0e7ffd671",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320418"
+    },
+    {
+        "id": "40eea397-480a-4a37-b71d-2bb1e9493f20",
+        "session_id": "3fa3b5c8-16f2-4c47-86c0-8abac8008d91",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-cf5028a3-24d7-4484-bfca-c2823a8584f4",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320484"
+    },
+    {
+        "id": "761e54af-019d-4597-866b-67b51a379de0",
+        "session_id": "bfff3e71-6d91-4b7d-ab24-830119babfde",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-352baa5c-a7e0-4b78-812c-72a549c2d67d",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320527"
+    },
+    {
+        "id": "10aa7055-14af-4e94-8360-a96b03a96e06",
+        "session_id": "0af0837a-e386-4765-80e0-381cb86c8547",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-698dc5d6-9012-431e-842c-1939ebe0bdcc",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320584"
+    },
+    {
+        "id": "2aecb341-9990-4970-94c6-3ef1e1010c45",
+        "session_id": "11a25171-bc08-46ed-9a5e-2f8c6e5052d2",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-4425a545-f0fb-449c-bd94-43910ac145a2",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320629"
+    },
+    {
+        "id": "31dbca02-5115-46a9-a06e-6221cb316235",
+        "session_id": "1e434dc4-708d-42b4-a967-6faa08c073fa",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-8861dec3-d17e-416c-bce4-1d8ce594e447",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320666"
+    },
+    {
+        "id": "27552c49-27bb-4f65-a6fa-45acf6c955f1",
+        "session_id": "82f8080a-5ed5-4ea7-90a7-d70bf5845e4c",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-dc922ecf-40f1-4bae-8666-942132e9dd19",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320729"
+    },
+    {
+        "id": "736831eb-6da1-4cf1-ab3b-6ee92005734b",
+        "session_id": "539d0c75-7110-46e2-a725-e48582d259fb",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-847a821f-3fb2-4e40-ab3c-48b2a164d359",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320765"
+    },
+    {
+        "id": "f7a48b49-e1f8-4881-99db-be16d2e270a4",
+        "session_id": "b67f8b2e-e891-4c47-a0f2-ba4baecaf671",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-16d3b6d9-1fad-42d0-8831-89d69e42ce22",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320820"
+    },
+    {
+        "id": "594c744d-9828-4a1b-b370-7f9642d117e8",
+        "session_id": "8b3a2466-1ed1-4e2a-9e92-fc8f26918226",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-fb5cea04-0f57-4198-a023-784a2f17c5d1",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320842"
+    },
+    {
+        "id": "a705003f-9a94-4515-a6d7-81653e85127c",
+        "session_id": "1c0ea8e5-1b48-4dee-82f3-06a4c0be2d85",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-7523225d-8f8c-45f1-8b73-b8c9e0340dba",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320863"
+    },
+    {
+        "id": "287ae35d-59fa-4fd2-850c-ad2f5e5d78f6",
+        "session_id": "26852b0c-5402-4760-b4c6-9f205cd8c3ad",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-8b85d7b6-aca1-4e3e-9865-fe87c6cce753",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320883"
+    },
+    {
+        "id": "4c27c46e-33b1-4c01-9ebd-cac0a2bb2dec",
+        "session_id": "2570a4f5-2d2d-47d9-a3b6-7d1c4d05b1e2",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-9305092f-5d0f-49c7-a476-2aa7562a1870",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320910"
+    },
+    {
+        "id": "c708e9a9-b1df-4002-93ef-454c53e989e2",
+        "session_id": "30eab053-1760-4315-a447-01c3df3c282e",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-0b865fd4-80d4-4123-8c1a-6bc5595ae042",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320932"
+    },
+    {
+        "id": "2ed15a00-e0bb-449d-abe5-70aa7522b577",
+        "session_id": "56c2ff71-b2f2-4f88-af05-cb48f396471f",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-cb300fdd-6bc3-4f91-9af2-c3d6ade520b1",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320953"
+    },
+    {
+        "id": "7906dd07-1282-4e84-997b-eabf065b171f",
+        "session_id": "62c0efa1-1a56-433a-8340-0fee1fa4380d",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-b15b49c3-dc50-4775-9dbe-7e0d639843bf",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320972"
+    },
+    {
+        "id": "c44e744c-30ee-4963-8eb1-c9fa6133adbf",
+        "session_id": "73bce216-60e6-424c-8b66-595d56a770ec",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-19c11def-5cfb-4767-8349-ea25e9151dd6",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.320997"
+    },
+    {
+        "id": "eb14cb22-ab79-4b94-a40a-74bb27ab0563",
+        "session_id": "4c7c7910-7b5d-44d9-a69a-29d7f31b9e3a",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-c3c4367c-d2c6-4904-a5e7-82747ae2f9a5",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321031"
+    },
+    {
+        "id": "27eac707-a043-4048-bf37-a895adde39e3",
+        "session_id": "965c910d-cc1f-47c4-83a4-64f313fbf630",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-69362e2c-7106-481b-b15b-53f96500c1b2",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321051"
+    },
+    {
+        "id": "b8836db3-d4ba-4208-88bb-6874ce650823",
+        "session_id": "84072ad1-a69c-4ed2-8d8f-0eafb016e812",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-b2f8a628-bcd3-4c3f-838e-77377d8dcf45",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321071"
+    },
+    {
+        "id": "e8946a01-b031-4f18-9174-0b9af0e25d6d",
+        "session_id": "2a64f2dd-fbe8-4d79-8007-4e544090a72c",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-4fee712e-ace9-4b3f-ae94-d2a0f25418c2",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321091"
+    },
+    {
+        "id": "b7a62096-6207-4e16-a210-d36a1eff725e",
+        "session_id": "a9abf682-05be-40b5-b8d9-54b48b032228",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-88978590-cd9c-4edb-a2e8-d0b4eaaeade6",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321110"
+    },
+    {
+        "id": "55a7c4c0-4e29-487b-b1db-02b0ed879559",
+        "session_id": "c4bd7e66-08d1-4d3d-86b5-a0a464012370",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-8e71ae0a-b1c4-468e-b226-ccd9ed806dce",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321129"
+    },
+    {
+        "id": "013f175e-ed49-435e-b7d6-8457d904b818",
+        "session_id": "b9801d16-a057-4fb0-9716-923abcb44e5b",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-e3449f85-4d31-4d28-984f-7c04bffa9b2b",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321148"
+    },
+    {
+        "id": "dfb0d2ee-347f-44c2-a672-1fa79e16eb01",
+        "session_id": "3e7661da-ad69-4181-8e61-61e59c32e7ad",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-61e65377-0fc3-4a95-b76b-fe941937ae55",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321167"
+    },
+    {
+        "id": "cb83015d-490b-4efe-825d-de12e9ca8524",
+        "session_id": "85ff0a66-63ca-4421-a46c-e19e0633367a",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-ef916c69-1e5a-43b8-ad31-3bf6dd29a62f",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321198"
+    },
+    {
+        "id": "55541e1b-2077-4938-b858-128ac390ee56",
+        "session_id": "9cc4e6c7-8796-4b96-8d65-eae5f1aa3542",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-d53a5ea5-fdc7-4e49-841d-7e266f91fb03",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321228"
+    },
+    {
+        "id": "e912f72d-cfd8-41a1-9fb5-44a2b57c5d1d",
+        "session_id": "0d3f92f5-9d4d-4f21-aa2c-38ec12014093",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-ab8d5989-f513-4107-9f2b-c529402394b0",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321248"
+    },
+    {
+        "id": "2d0fe7cb-faa0-481f-af93-3f49469d51a8",
+        "session_id": "411088f1-e5aa-4322-b060-276fbbff4116",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-07b182d4-a8f7-4a1f-b8e1-1dc9a570c034",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321275"
+    },
+    {
+        "id": "883e60ab-696b-4164-a4b2-6bdd37beaba4",
+        "session_id": "5693917a-8780-494d-b8e9-15f8f6c6753d",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-5c482b84-1d7c-4103-bece-5fdd9dace7d2",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321300"
+    },
+    {
+        "id": "220d190e-6de1-49da-990d-80afa3a292a5",
+        "session_id": "43d8f0b8-6055-4cde-8e2f-0f05a53a9d43",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-62f2aa18-b11f-4fb6-bafd-9ea5ed7b1991",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321323"
+    },
+    {
+        "id": "8506ad1b-c489-420b-ab62-e5fb3fb0924d",
+        "session_id": "5a0e0d9e-242c-4bcf-b9a0-421458cf95e6",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-831ed6b1-6993-400e-8acb-ddf287b29576",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321347"
+    },
+    {
+        "id": "290f398b-3084-44b8-9463-5b17fa907397",
+        "session_id": "afc9b76d-2cee-40e2-af47-6a87fce912cc",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-46c5a89e-94d9-486f-9d4a-8bf03e3c97ad",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321366"
+    },
+    {
+        "id": "d25a93c2-192c-47e0-bc43-df601d9dfe31",
+        "session_id": "58bc8ce8-3de9-4a55-b341-83bbcdf2e9c1",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-3e525577-44f0-48a4-b108-b90c3b92651e",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321385"
+    },
+    {
+        "id": "e1cf67af-2a66-4707-a0f4-6ade782ee19b",
+        "session_id": "873f8c8a-2d26-49ee-b456-fdc8926ebe32",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-740539d7-afd2-4aff-837d-7580d9108f44",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321404"
+    },
+    {
+        "id": "49ba0350-d85a-463f-a1f8-0cd86f40e367",
+        "session_id": "78ad7fa1-91d6-49c9-af80-fd4ffd680c0b",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-9415013f-8ff4-4337-a76f-af509ff8b4a5",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321426"
+    },
+    {
+        "id": "c1a9a9f8-043d-4bf3-ac6a-af72fd9a84cb",
+        "session_id": "260db8b8-cbb9-4aa6-bf81-4d0da05eebcc",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-47cbbbea-09c3-4ea0-a56b-d8ed2c11ce30",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321475"
+    },
+    {
+        "id": "d8903073-a277-4bd0-bf7f-f83fb5db6f91",
+        "session_id": "1381aca1-1e9d-46e8-8d06-b2a59410623b",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-4f0e6c4c-8671-4b53-bb33-dbeebae8de81",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321502"
+    },
+    {
+        "id": "7236aba3-cf5c-4650-995b-36dab8686a9a",
+        "session_id": "788a2627-4af9-4435-bb06-9237eca41dbd",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-4cb0dc9b-29ed-4cab-b428-62baaff1b88d",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321529"
+    },
+    {
+        "id": "031e0063-8287-4c19-837a-2d60b9f2458b",
+        "session_id": "f85225dd-43c6-4e1c-bd21-64dd3a51b8f0",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-6e244f6d-c94f-4aae-a13c-f2947346b3a4",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321557"
+    },
+    {
+        "id": "c383deb9-1646-4b2e-9ccd-1a57e59ec033",
+        "session_id": "e08e1ec0-cdb2-4712-8347-afe12b6aa0f2",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-cb26a4fd-4b5e-49e3-93ff-c0ae8530694e",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321584"
+    },
+    {
+        "id": "d5126509-d1e4-431f-9691-9c17267eadc0",
+        "session_id": "3085f194-90c0-4c46-b0da-dd1fc4968692",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-cc4f0f7b-9cf8-4987-b9f9-bf005f3904dc",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321612"
+    },
+    {
+        "id": "1f2c29d4-8aee-46d3-b8ad-4c47e1fd0e48",
+        "session_id": "4760af72-0604-4bee-b68f-5bbabc3079e6",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-6ee8a5f1-b35a-4bbe-921e-17d4af224ae1",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321639"
+    },
+    {
+        "id": "bd9ff607-2e6a-49e2-a9df-b48c77acd9ae",
+        "session_id": "e6095907-f57e-4e57-94c9-234166f48c26",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-f6e30761-7318-4266-9254-8ebfa7af1d09",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321684"
+    },
+    {
+        "id": "1d073582-4f81-403b-8d23-73d35c17ad4a",
+        "session_id": "ddee5381-0628-46a0-a083-2062b722eaf9",
+        "action_type": "CREATE",
+        "resource_type": "user",
+        "resource_id": "sample-resource-id-e66015a9-3ed4-4aaf-8933-9698ab39d2fb",
+        "severity": "INFO",
+        "ip_address": "192.168.1.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "before_state": {
+            "name": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        "after_state": {
+            "name": "John Doe",
+            "email": "john.doe@newdomain.com"
+        },
+        "metadata": {
+            "note": "Email address updated"
+        },
+        "timestamp": "2025-07-19T09:43:09.321849"
+    }
+]
