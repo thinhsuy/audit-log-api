@@ -27,6 +27,9 @@ async def list_out_tenants(
         if not token_data:
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
     
+        if not AuthenService.is_admin_role(token_data.get("role", "")):
+            raise HTTPException(status_code=401, detail="Role token is invalid and not allowed.")
+
         tenants = await PGRetrieve(db).retrieve_tenants()
 
         if not tenants:
@@ -41,7 +44,6 @@ async def list_out_tenants(
         logger.error(f"{message}: {traceback.format_exc()}")
         return ListTenantsResponse(message=message)
 
-
 @router.post(
     "/",
     response_model=CreateTenantResponse
@@ -55,7 +57,10 @@ async def create_tenant(
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
-    
+
+        if not AuthenService.is_admin_role(token_data.get("role", "")):
+            raise HTTPException(status_code=401, detail="Role token is invalid and not allowed.")
+
         new_tenant = Tenant(name=payload.tenant_name)
         _ = await PGCreation(db).create_new_tenant(new_tenant)
 

@@ -1,12 +1,1 @@
-{
-    "message": "Create access token successfully!",
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQwMTk0OTFkLWZmNmQtNDI5OC04MGIzLTM0MGNkMzY2MDc2YSIsIm5hbWUiOiJSZXNvbGEiLCJ0ZW5hbnRfaWQiOiJkOWU2NGMyZC1hY2U1LTQzMTgtODQ1Zi01NDA3MDgxNjcxOWIiLCJ1c2VybmFtZSI6Ikx1Y2t5IiwiZW1haWwiOiJsdWNreUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDAxOTQ5MWQtZmY2ZC00Mjk4LTgwYjMtMzQwY2QzNjYwNzZhIiwiZXhwIjoxNzUzMDEwMDk0fQ.QZY3ne0y-uueOijixTQcCp6W9AmMAhH9hoa7p1ggUEw",
-    "session": {
-        "id": "d9089f18-e687-4bd4-a22d-b342d581a67e",
-        "tenant_id": "d9e64c2d-ace5-4318-845f-54070816719b",
-        "user_id": "d019491d-ff6d-4298-80b3-340cd366076a",
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQwMTk0OTFkLWZmNmQtNDI5OC04MGIzLTM0MGNkMzY2MDc2YSIsIm5hbWUiOiJSZXNvbGEiLCJ0ZW5hbnRfaWQiOiJkOWU2NGMyZC1hY2U1LTQzMTgtODQ1Zi01NDA3MDgxNjcxOWIiLCJ1c2VybmFtZSI6Ikx1Y2t5IiwiZW1haWwiOiJsdWNreUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDAxOTQ5MWQtZmY2ZC00Mjk4LTgwYjMtMzQwY2QzNjYwNzZhIiwiZXhwIjoxNzUzMDEwMDk0fQ.QZY3ne0y-uueOijixTQcCp6W9AmMAhH9hoa7p1ggUEw",
-        "started_at": "2025-07-19T16:14:54.521825Z",
-        "ended_at": "2025-07-20T11:14:54.521825Z"
-    }
-}
+{"message": "Failed to generate token for user Lucky", "access_token": null, "session": null}

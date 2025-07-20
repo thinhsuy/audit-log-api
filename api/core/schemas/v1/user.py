@@ -9,12 +9,15 @@ from sqlalchemy import (
 import uuid
 from sqlalchemy.sql import func
 from typing import Optional
+from sqlalchemy import String
+from core.schemas.v1.enum import user_role_enum
+from core. schemas.base import BaseObject
 
 class User(BaseObject):
-    id: Optional[str] = str(uuid.uuid4())
     tenant_id: str
     username: str
     email: Optional[str] = None
+    role: str = None
 
 class UserTable(Base):
     """
@@ -31,7 +34,7 @@ class UserTable(Base):
     id = Column(
         String,
         primary_key=True,
-        default=uuid.uuid4,
+        default=str(uuid.uuid4()),
         index=True,
     )
     tenant_id = Column(
@@ -42,8 +45,18 @@ class UserTable(Base):
     )
     username = Column(String, nullable=False)
     email = Column(String, nullable=True)
+    role = Column(user_role_enum, nullable=False)
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
+
+class MaskedUser(Base):
+    __tablename__ = "masked_user"
+    __table_args__ = (
+        UniqueConstraint('user_id', name='uq_user_masked_email'),
+    )
+    user_id = Column(String, primary_key=True, nullable=False)
+    masked_email = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

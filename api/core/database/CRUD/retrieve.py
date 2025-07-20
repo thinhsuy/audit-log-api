@@ -4,6 +4,9 @@ from core.schemas.v1.user import  UserTable, User
 from core.schemas.v1.logs import AuditLogTable, AuditLog
 from typing import List
 from sqlalchemy import select
+from sqlalchemy.sql import func
+from core.schemas.v1.enum import SeverityEnum, ActionTypeEnum, LogStatsEnum
+from core.schemas.v1.logs import LogStats
 
 class PGRetrieve:
     def __init__(self, db: AsyncSession):
@@ -42,6 +45,8 @@ class PGRetrieve:
         tenant_id: str = None,
         user_id: str = None,
         log_id: str = None,
+        limit: int = None,
+        order_by_time: bool = True,
         is_get_one: bool = False,
     ) -> List[AuditLog]:
         query = select(AuditLogTable)
@@ -51,6 +56,12 @@ class PGRetrieve:
             query.where(AuditLogTable.user_id == user_id)
         if log_id:
             query.where(AuditLogTable.id == log_id)
+        
+        if order_by_time:
+            query = query.order_by(AuditLogTable.timestamp.desc())
+
+        if limit:
+            query = query.limit(limit)
         
         result = await self.db.execute(query)
 
@@ -84,3 +95,40 @@ class PGRetrieve:
             Tenant.model_validate(tenant_table)
             for tenant_table in result.scalars().all()
         ]
+
+    async def get_log_statistics(self, tenant_id: str) -> LogStats:
+        field_names = [
+            LogStatsEnum.TOTOL_LOGS,
+            LogStatsEnum.INFO_LOGS,
+            LogStatsEnum.WARN_LOGS,
+            LogStatsEnum.ERROR_LOGS, 
+            LogStatsEnum.CRITICAL_lOGS,
+            LogStatsEnum.CREATE_LOGS,
+            LogStatsEnum.UPDATE_LOGS,
+            LogStatsEnum.DELETE_LOGS,
+            LogStatsEnum.VIEW_LOGS
+        ]
+
+        query = select(
+            func.count().label(LogStatsEnum.TOTOL_LOGS),
+            func.count().filter(AuditLogTable.severity == SeverityEnum.INFO).label(LogStatsEnum.INFO_LOGS),
+            func.count().filter(AuditLogTable.severity == SeverityEnum.WARNING).label(LogStatsEnum.WARN_LOGS),
+            func.count().filter(AuditLogTable.severity == SeverityEnum.ERROR).label(LogStatsEnum.ERROR_LOGS),
+            func.count().filter(AuditLogTable.severity == SeverityEnum.CRITICAL).label(LogStatsEnum.CRITICAL_lOGS),
+            func.count().filter(AuditLogTable.action_type == ActionTypeEnum.CREATE).label(LogStatsEnum.CREATE_LOGS),
+            func.count().filter(AuditLogTable.action_type == ActionTypeEnum.UPDATE).label(LogStatsEnum.UPDATE_LOGS),
+            func.count().filter(AuditLogTable.action_type == ActionTypeEnum.DELETE).label(LogStatsEnum.DELETE_LOGS),
+            func.count().filter(AuditLogTable.action_type == ActionTypeEnum.VIEW).label(LogStatsEnum.VIEW_LOGS),
+        ).where(AuditLogTable.tenant_id == tenant_id)
+
+        result = await self.db.execute(query)
+        stats = result.fetchone()
+
+        if not stats:
+            return LogStats(stats={})
+
+        stats_dict = {
+            field_names[i]: stats[i]
+            for i in range(len(field_names))
+        }
+        return LogStats(stats=stats_dict)

@@ -14,9 +14,10 @@ class CreateAccessTokenResponse(BaseModel):
 class RefreshTokenPayload(BaseModel):
     access_token: str
 
-class TenantUserCreatePayload(BaseModel):
+class CreateAccountPayload(BaseModel):
     tenant_name: str
     username: str
+    role: str = None
     email: Optional[str] = None
 
 class TenantUserCreateResponse(BaseModel):

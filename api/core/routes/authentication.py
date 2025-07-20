@@ -5,7 +5,7 @@ from core.schemas.payloads.authentication import (
     CreateAccessTokenResponse,
     RefreshTokenPayload,
     TenantUserCreateResponse,
-    TenantUserCreatePayload
+    CreateAccountPayload
 )
 from core.services.authentication import AuthenService
 from core.config import logger
@@ -27,7 +27,7 @@ router = APIRouter()
     description="Create new tenant and user in that tenant"
 )
 async def create_tenant_and_user(
-    payload: TenantUserCreatePayload,
+    payload: CreateAccountPayload,
     db: AsyncSession = Depends(async_get_db)
 ):
     try:
@@ -35,7 +35,8 @@ async def create_tenant_and_user(
         user = User(
             username=payload.username,
             email=payload.email,
-            tenant_id=tenant.id
+            tenant_id=tenant.id,
+            role=payload.role
         )
         response = await AuthenService.create_new_tenant_and_user(
             tenant=tenant,
@@ -113,7 +114,7 @@ async def generate_new_access_token(
             session=new_session.model_dump()
         )
     except Exception:
-        message = f"Failed to generate token for user {payload.user_id}"
+        message = f"Failed to generate token for user {payload.username}"
         logger.error(f"{message}: {traceback.format_exc()}")
         return CreateAccessTokenResponse(message=message)
 
