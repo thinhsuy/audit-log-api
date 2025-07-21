@@ -3,7 +3,7 @@ from core.services.authentication import AuthenService
 from core.config import logger
 import traceback
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database.base import async_get_db
+from core.database import async_get_db
 from core.database.CRUD import PGCreation, PGRetrieve
 from core.services.websocket import WS_MANAGER, WS_SERVICE
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer

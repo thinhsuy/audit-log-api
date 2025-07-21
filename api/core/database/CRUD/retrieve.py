@@ -12,6 +12,41 @@ class PGRetrieve:
     def __init__(self, db: AsyncSession):
         self.db = db
     
+    async def retrieve_logs(
+        self,
+        tenant_id: str = None,
+        user_id: str = None,
+        log_id: str = None,
+        limit: int = None,
+        order_by_time: bool = True,
+        is_get_one: bool = False,
+    ) -> List[AuditLog]:
+        query = select(AuditLogTable)
+        
+        if tenant_id:
+            query = query.where(AuditLogTable.tenant_id == tenant_id)
+        if user_id:
+            query = query.where(AuditLogTable.user_id == user_id)
+        if log_id:
+            query = query.where(AuditLogTable.id == log_id)
+        
+        if order_by_time:
+            query = query.order_by(AuditLogTable.timestamp.desc())
+
+        if limit:
+            query = query.limit(limit)
+        
+        result = await self.db.execute(query)
+
+        if is_get_one:
+            log_table = result.scalar()
+            return AuditLog.model_validate(log_table) if log_table else None
+
+        return [
+            AuditLog.model_validate(log_table)
+            for log_table in result.scalars().all()
+        ]
+
     async def retrieve_tenant(
         self,
         tenant_name: str = None,
@@ -39,40 +74,6 @@ class PGRetrieve:
         q_t = await self.db.execute(query)
         user_table = q_t.scalar_one_or_none()
         return User.model_validate(user_table) if user_table else None
-
-    async def retrieve_logs(
-        self,
-        tenant_id: str = None,
-        user_id: str = None,
-        log_id: str = None,
-        limit: int = None,
-        order_by_time: bool = True,
-        is_get_one: bool = False,
-    ) -> List[AuditLog]:
-        query = select(AuditLogTable)
-        if tenant_id:
-            query.where(AuditLogTable.tenant_id == tenant_id)
-        if user_id:
-            query.where(AuditLogTable.user_id == user_id)
-        if log_id:
-            query.where(AuditLogTable.id == log_id)
-        
-        if order_by_time:
-            query = query.order_by(AuditLogTable.timestamp.desc())
-
-        if limit:
-            query = query.limit(limit)
-        
-        result = await self.db.execute(query)
-
-        if is_get_one:
-            log_table = result.scalar()
-            return AuditLog.model_validate(log_table) if log_table else None
-
-        return [
-            AuditLog.model_validate(log_table)
-            for log_table in result.scalars().all()
-        ]
 
     async def retrieve_tenants(
         self,

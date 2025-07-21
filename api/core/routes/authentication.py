@@ -3,13 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.schemas.payloads.authentication import (
     CreateAccessTokenPayload,
     CreateAccessTokenResponse,
-    RefreshTokenPayload,
     TenantUserCreateResponse,
     CreateAccountPayload
 )
 from core.services.authentication import AuthenService
 from core.config import logger
-from core.database.base import async_get_db
 from core.services.authentication import AuthenService
 from core.schemas.v1.tenant import Tenant
 from core.schemas.v1.user import User
@@ -18,6 +16,7 @@ from datetime import datetime, timedelta
 import traceback
 from core.database.CRUD import PGRetrieve
 from core.config import ACCESS_TOKEN_EXPIRE_MINUTES, VIETNAM_TZ
+from core.database import async_get_db
 
 router = APIRouter()
 

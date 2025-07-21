@@ -8,7 +8,7 @@ class PGDeletion:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def cleanup_old_logs(self, tenant_id: str, retention_days: int) -> int:
+    async def cleanup_old_logs(self, tenant_id: str, retention_days: int = 1) -> int:
         cutoff_date = datetime.now(VIETNAM_TZ) - timedelta(days=retention_days)
         query = delete(AuditLogTable).where(
             AuditLogTable.tenant_id == tenant_id,

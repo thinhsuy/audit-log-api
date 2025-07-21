@@ -6,7 +6,7 @@ import asyncio
 import json
 import gzip
 
-class ConnectionManager(AppService):
+class ConnectionManager:
     def __init__(self) -> WebSocket:
         self.channels: Dict[str, List[Tuple[WebSocket, str]]] = {}
 
@@ -64,7 +64,7 @@ class ConnectionManager(AppService):
         return []
 
 
-class WebSocketSerivce(AppService):
+class WebSocketSerivce:
     def __init__(self, storage: str = "memory://") -> None:
         self.broadcast = LibBroadcast(storage)
         self.active_listeners = set()

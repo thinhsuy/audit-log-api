@@ -6,14 +6,13 @@ import traceback
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database.base import async_get_db
+from core.database import async_get_db
 from core.database.CRUD import PGCreation, PGRetrieve, PGDeletion
 import csv
 from typing import List
 import tempfile
 import asyncio
 from fastapi.responses import FileResponse
-from core.services.websocket import WS_MANAGER, WS_SERVICE
 
 router = APIRouter()
 
@@ -154,7 +153,6 @@ async def bulk_create_logs(
     response_model=CleanupLogResponse
 )
 async def cleanup_old_logs(
-    payload: CleanupLogPayload,
     token: TokenDependencies,
     retention_days: int = 90,
     db: AsyncSession = Depends(async_get_db),
@@ -165,9 +163,7 @@ async def cleanup_old_logs(
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
         
         tenant_id = token_data.get("tenant_id", None)
-        deleted_count = await PGDeletion(db).cleanup_old_logs(
-            tenant_id, payload.retention_days
-        )
+        deleted_count = await PGDeletion(db).cleanup_old_logs(tenant_id)
 
         return CleanupLogResponse(
             message=f"Cleanup completed successfully! {deleted_count} logs deleted.",
@@ -227,13 +223,12 @@ async def get_logs(
         )
 
         if not log:
-            return GetLogResponse(message="There is no log available")
+            return GetLogResponse(message=f"There is no log with id: {id}")
 
         return GetLogResponse(
-            message="Retrieve logs successfully!",
+            message="Retrieve log successfully!",
             log=log
         )
-    except Exception:
-        message = "Failed to get logs!"
-        logger.error(f"{message}: {traceback.format_exc()}")
-        return GetLogResponse(message=message)
+    except Exception as e:
+        logger.error(f"Failed to get logs by id: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail="Failed to get logs")

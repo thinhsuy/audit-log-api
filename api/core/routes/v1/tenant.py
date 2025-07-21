@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database.base import async_get_db
+from core.database import async_get_db
 from core.services.authentication import AuthenService
 from core.database.CRUD import PGRetrieve, PGCreation
 from core.schemas.payloads.tenant import *
