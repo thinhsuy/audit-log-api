@@ -28,7 +28,6 @@ class SessionTable(Base):
     __tablename__ = "sessions"
     __table_args__ = (
         Index("ix_sessions_tenant_user", "tenant_id", "user_id"),
-        # Index("ix_sessions_access_token", "access_token"),
     )
 
     id = Column(

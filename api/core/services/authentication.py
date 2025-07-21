@@ -10,6 +10,7 @@ from core.database.CRUD import PGRetrieve, PGCreation
 from core.schemas.v1.tenant import Tenant
 from core.schemas.v1.user import User
 from core.schemas.v1.session import Session
+from core.schemas.v1.enum import UserRoleEnum
 
 class AuthenService(AppService):
     @staticmethod
@@ -95,4 +96,7 @@ class AuthenService(AppService):
     @staticmethod
     async def create_new_session_access(session: Session, db: AsyncSession) -> Session:
         return await PGCreation(db).create_new_session(session)
-        
+    
+    @staticmethod
+    async def is_admin_role(role: str) -> bool:
+        return role == UserRoleEnum.ADMIN

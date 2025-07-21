@@ -3,13 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.schemas.payloads.authentication import (
     CreateAccessTokenPayload,
     CreateAccessTokenResponse,
-    RefreshTokenPayload,
     TenantUserCreateResponse,
-    TenantUserCreatePayload
+    CreateAccountPayload
 )
 from core.services.authentication import AuthenService
 from core.config import logger
-from core.database.base import async_get_db
 from core.services.authentication import AuthenService
 from core.schemas.v1.tenant import Tenant
 from core.schemas.v1.user import User
@@ -18,6 +16,7 @@ from datetime import datetime, timedelta
 import traceback
 from core.database.CRUD import PGRetrieve
 from core.config import ACCESS_TOKEN_EXPIRE_MINUTES, VIETNAM_TZ
+from core.database import async_get_db
 
 router = APIRouter()
 
@@ -27,7 +26,7 @@ router = APIRouter()
     description="Create new tenant and user in that tenant"
 )
 async def create_tenant_and_user(
-    payload: TenantUserCreatePayload,
+    payload: CreateAccountPayload,
     db: AsyncSession = Depends(async_get_db)
 ):
     try:
@@ -35,7 +34,8 @@ async def create_tenant_and_user(
         user = User(
             username=payload.username,
             email=payload.email,
-            tenant_id=tenant.id
+            tenant_id=tenant.id,
+            role=payload.role
         )
         response = await AuthenService.create_new_tenant_and_user(
             tenant=tenant,
@@ -113,7 +113,7 @@ async def generate_new_access_token(
             session=new_session.model_dump()
         )
     except Exception:
-        message = f"Failed to generate token for user {payload.user_id}"
+        message = f"Failed to generate token for user {payload.username}"
         logger.error(f"{message}: {traceback.format_exc()}")
         return CreateAccessTokenResponse(message=message)
 

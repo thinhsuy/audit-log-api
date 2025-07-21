@@ -12,6 +12,8 @@ BASE_DIR = Path(__file__).parent.parent.absolute()
 LOGS_DIR = Path(BASE_DIR, "logs")
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 PACKAGE_DIR = Path(BASE_DIR, "core")
+DATA_DIR = Path(PACKAGE_DIR, "data")
+TEST_DIR = Path(PACKAGE_DIR, "test")
 dir = os.listdir()
 
 SECRET_KEY = "your_secret_key_here"
