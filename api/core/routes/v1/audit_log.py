@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from core.schemas.payloads.logs import *
 from core.services.authentication import AuthenService
 from core.config import logger
@@ -13,7 +13,9 @@ from typing import List
 import tempfile
 import asyncio
 from fastapi.responses import FileResponse
+from core.services.sqs import SQSService
 
+sqs_service = SQSService()
 router = APIRouter()
 
 TokenDependencies = Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer())]
@@ -25,6 +27,7 @@ TokenDependencies = Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer()
 )
 async def get_log(
     payload: CreateLogPayload,
+    background_tasks: BackgroundTasks,
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
@@ -40,6 +43,16 @@ async def get_log(
         )
         if not status:
             return LogEntryCreateResponse(message="Failed to create log!")
+        
+        sqs_payload = {
+            "tenant_id": token_data["tenant_id"],
+            "user_id": token_data["user_id"],
+            "action": payload.action_type,
+            "resource": f"{payload.resource_type}/{payload.resource_id}",
+            "timestamp": payload.timestamp.isoformat()
+        }
+        background_tasks.add_task(sqs_service.send_message, sqs_payload)
+
         return LogEntryCreateResponse(
             message="Create Log Successfully!",
             log=payload.model_dump()

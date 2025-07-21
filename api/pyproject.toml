@@ -29,6 +29,7 @@ pytest = "^8.4.1"
 starlette = "^0.47.2"
 pytest-asyncio = "^1.1.0"
 asgi-lifespan = "^2.1.0"
+boto3 = "^1.39.9"
 
 [build-system]
 requires = ["poetry-core"]
