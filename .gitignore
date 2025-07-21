@@ -130,11 +130,5 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Google API credentials
-api/core/integrations/google/client_secret.json
-api/core/integrations/google/token_google_api.pickle
-
 # Output documents
-# api/core/integrations/google/output_documents/
-api/payments.json
-api/core/store/payment_tracking.json
+api/core/data/*.json

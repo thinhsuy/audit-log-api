@@ -27,6 +27,8 @@ python-multipart = "^0.0.20"
 broadcaster = "^0.3.1"
 pytest = "^8.4.1"
 starlette = "^0.47.2"
+pytest-asyncio = "^1.1.0"
+asgi-lifespan = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core"]
