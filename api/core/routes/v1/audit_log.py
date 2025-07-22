@@ -11,11 +11,9 @@ from core.database.CRUD import PGCreation, PGRetrieve, PGDeletion
 import csv
 from typing import List
 import tempfile
-import asyncio
 from fastapi.responses import FileResponse
-from core.services.sqs import SQSService
+from core.services import Audit_SQS
 
-sqs_service = SQSService()
 router = APIRouter()
 
 TokenDependencies = Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer())]
@@ -36,22 +34,21 @@ async def get_log(
         if not token_data:
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
 
-        status = await PGCreation(db).create_new_log(
+        log = await PGCreation(db).create_new_log(
             log=payload,
             tenant_id=token_data.get("tenant_id", None),
             user_id=token_data.get("user_id", None)
         )
-        if not status:
+        if not log:
             return LogEntryCreateResponse(message="Failed to create log!")
         
-        sqs_payload = {
-            "tenant_id": token_data["tenant_id"],
-            "user_id": token_data["user_id"],
-            "action": payload.action_type,
-            "resource": f"{payload.resource_type}/{payload.resource_id}",
-            "timestamp": payload.timestamp.isoformat()
-        }
-        background_tasks.add_task(sqs_service.send_message, sqs_payload)
+        background_tasks.add_task(
+            Audit_SQS.send_message,
+            {
+                "type": "logs.created",
+                **log.model_dump()
+            }
+        )
 
         return LogEntryCreateResponse(
             message="Create Log Successfully!",
@@ -132,6 +129,7 @@ async def export_logs(
 )
 async def bulk_create_logs(
     payload: List[CreateLogPayload],
+    background_tasks: BackgroundTasks,
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db)
 ):
@@ -151,6 +149,16 @@ async def bulk_create_logs(
         if not logs:
             raise HTTPException(status_code=500, detail="Failed to create bulk logs")
 
+        background_tasks.add_task(
+            Audit_SQS.send_message,
+            {
+                "type": "logs.created",
+                "logs": [
+                    log.model_dump()
+                    for log in logs
+                ]
+            }
+        )
         return BulkLogCreateResponse(
             message="Logs created successfully!",
             logs=[log.model_dump() for log in logs]
@@ -203,7 +211,7 @@ async def get_logs_stats(
         
         tenant_id = token_data.get("tenant_id", None)
 
-        stats = await PGRetrieve(db).get_log_statistics(tenant_id)
+        stats = await PGRetrieve(db).get_logs_stats_by_tenant(tenant_id)
 
         return GetLogsStatsResponse(
             message="Log statistics retrieved successfully!",

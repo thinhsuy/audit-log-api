@@ -7,6 +7,9 @@ from sqlalchemy import select
 from sqlalchemy.sql import func
 from core.schemas.v1.enum import SeverityEnum, ActionTypeEnum, LogStatsEnum
 from core.schemas.v1.logs import LogStats
+from datetime import datetime, timedelta
+from core.config import VIETNAM_TZ
+from core.schemas.v1.enum import SeverityEnum
 
 class PGRetrieve:
     def __init__(self, db: AsyncSession):
@@ -97,7 +100,8 @@ class PGRetrieve:
             for tenant_table in result.scalars().all()
         ]
 
-    async def get_log_statistics(self, tenant_id: str) -> LogStats:
+    async def get_logs_stats_by_tenant(self, tenant_id: str) -> LogStats:
+        """This would return total logs have been occured in the whole time of tenent"""
         field_names = [
             LogStatsEnum.TOTOL_LOGS,
             LogStatsEnum.INFO_LOGS,
@@ -133,3 +137,28 @@ class PGRetrieve:
             for i in range(len(field_names))
         }
         return LogStats(stats=stats_dict)
+
+    async def get_logs_stats_alert(self, tenant_id: str, time_retention: int = 24) -> LogStats:
+        """Get logs stats of Severity and alert whenever a new log created"""
+        now = datetime.now(VIETNAM_TZ)
+        window_start = now - timedelta(hours=time_retention)
+        severities = [SeverityEnum.ERROR, SeverityEnum.CRITICAL, SeverityEnum.WARNING]
+        counts = {}
+        query = (
+            select(
+                AuditLogTable.severity,
+                func.count(AuditLogTable.id).label("cnt")
+            )
+            .where(
+                AuditLogTable.tenant_id == tenant_id,
+                AuditLogTable.timestamp >= window_start,
+                AuditLogTable.severity.in_(severities)
+            )
+            .group_by(AuditLogTable.severity)
+        )
+        result = await self.db.execute(query)
+        rows = result.all()
+        counts = {level: 0 for level in severities}
+        for severity, count in rows:
+            counts[severity] = count
+        return LogStats(stats=counts)

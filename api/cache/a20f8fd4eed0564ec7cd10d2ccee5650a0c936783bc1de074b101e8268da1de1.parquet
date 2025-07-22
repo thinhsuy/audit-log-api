@@ -1,0 +1,1 @@
+id,tenant_id,user_id,session_id,action_type,resource_type,resource_id,severity,ip_address,user_agent,before_state,after_state,meta_data,timestamp

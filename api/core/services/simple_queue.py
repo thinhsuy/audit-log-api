@@ -1,23 +1,27 @@
-from core.config import os
+from core.config import (
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_REGION,
+)
 import json
 import boto3
 from botocore.exceptions import ClientError
 
-class SQSService:
-    def __init__(self):
+
+class SimpleQueueService:
+    def __init__(self, queue_url: str):
         self.sqs = boto3.client(
             "sqs",
-            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-            region_name=os.getenv("AWS_REGION")
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=AWS_REGION,
         )
-        self.queue_url: str = os.environ.get("SQS_QUEUE_URL", "")
-    
+        self.queue_url: str = queue_url
+
     def send_message(self, payload: dict) -> str:
         try:
             resp = self.sqs.send_message(
-                QueueUrl=self.queue_url,
-                MessageBody=json.dumps(payload)
+                QueueUrl=self.queue_url, MessageBody=json.dumps(payload)
             )
             msg_id = resp["MessageId"]
             print(f"[SQS][SEND] MessageId: {msg_id}")
@@ -26,13 +30,18 @@ class SQSService:
             print("[SQS][ERROR][send_message]", e)
             raise
 
-    def receive_messages(self, max_messages=1, wait_seconds=5):
+    def receive_messages(
+        self,
+        max_messages: int = 1,
+        wait_seconds: int = 5,
+        visibility_timeout: int = 30,
+    ):
         try:
             resp = self.sqs.receive_message(
                 QueueUrl=self.queue_url,
                 MaxNumberOfMessages=max_messages,
-                WaitTimeSeconds=wait_seconds,      # long polling
-                VisibilityTimeout=30               # giấu message trong 30s
+                WaitTimeSeconds=wait_seconds,
+                VisibilityTimeout=30,
             )
             msgs = resp.get("Messages", [])
             print(f"[RECEIVE] Got {len(msgs)} message(s)")
@@ -44,12 +53,10 @@ class SQSService:
             print("[ERROR][receive_messages]", e)
             raise
 
-
     def delete_message(self, receipt_handle: str):
         try:
             self.sqs.delete_message(
-                QueueUrl=self.queue_url,
-                ReceiptHandle=receipt_handle
+                QueueUrl=self.queue_url, ReceiptHandle=receipt_handle
             )
             print(f"[DELETE] Success for handle {receipt_handle}")
         except ClientError as e:
@@ -61,15 +68,20 @@ class SQSService:
             resp = self.sqs.receive_message(
                 QueueUrl=self.queue_url,
                 MaxNumberOfMessages=batch_size,
-                WaitTimeSeconds=1
+                WaitTimeSeconds=1,
             )
             msgs = resp.get("Messages", [])
             if not msgs:
                 break
-            entries = [{
-                "Id": m["MessageId"],
-                "ReceiptHandle": m["ReceiptHandle"]
-            } for m in msgs]
+            entries = [
+                {
+                    "Id": m["MessageId"],
+                    "ReceiptHandle": m["ReceiptHandle"],
+                }
+                for m in msgs
+            ]
             print("Delete Message:", msgs.get("Body"))
-            self.sqs.delete_message_batch(QueueUrl=self.queue_url, Entries=entries)
+            self.sqs.delete_message_batch(
+                QueueUrl=self.queue_url, Entries=entries
+            )
         print("Already delete all messages!")

@@ -5,14 +5,13 @@ from jose import JWTError
 from core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, VIETNAM_TZ
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.services import AppService
 from core.database.CRUD import PGRetrieve, PGCreation
 from core.schemas.v1.tenant import Tenant
 from core.schemas.v1.user import User
 from core.schemas.v1.session import Session
 from core.schemas.v1.enum import UserRoleEnum
 
-class AuthenService(AppService):
+class AuthenService:
     @staticmethod
     def create_access_token(
         data: dict,

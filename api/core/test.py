@@ -3,7 +3,7 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 
-class SQSService:
+class SimpleQueueService:
     def __init__(self):
         self.sqs = boto3.client(
             "sqs",

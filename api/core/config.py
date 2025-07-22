@@ -19,14 +19,28 @@ dir = os.listdir()
 SECRET_KEY = "your_secret_key_here"
 ALGORITHM = "HS256" 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+WARNING_THRESHOLD = 50
+ERROR_THRESHOLD = 30
+CRITICAL_THRESHOLD = 10
 VIETNAM_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
 
-HOST = os.environ.get("DBHOST", None)
-PORT = os.environ.get("DBPORT", None)
-DBUSER = os.environ.get("DBUSER", None)
-DBPASSWORD = os.environ.get("DBPASSWORD", None)
-DBNAME = os.environ.get("DBNAME", None)
-AUDIT_USER_DB_URL = f"postgresql+asyncpg://{DBUSER}:{DBPASSWORD}@{HOST}:{PORT}/{DBNAME}"
+DB_HOST = os.environ.get("DBHOST", None)
+DB_PORT = os.environ.get("DBPORT", None)
+DB_USER = os.environ.get("DBUSER", None)
+DB_PASSWORD = os.environ.get("DBPASSWORD", None)
+DB_NAME = os.environ.get("DBNAME", None)
+AUDIT_USER_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+PANDAS_API_KEY = os.environ.get("PANDAS_API_KEY", None)
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = os.environ.get("AWS_REGION")
+AUDIT_QUEUE_URL = os.environ.get("SQS_QUEUE_URL")
+
+AZURE_OPENAI_EMB_DEPLOYMENT = os.environ.get("AZURE_OPENAI_EMB_DEPLOYMENT")
+AZURE_OPENAI_DEPLOYMENT_NAME = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME")
+AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 
 logging_config = {
     "version": 1,

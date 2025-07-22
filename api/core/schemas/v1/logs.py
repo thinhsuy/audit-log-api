@@ -52,7 +52,6 @@ class LogFilterParams(BaseObject):
 
 class AuditLogTable(Base):
     """This is the table for loging information of logs.
-
     This table also need to be indexed in several composition index for faster searching.
     """
 
@@ -61,9 +60,7 @@ class AuditLogTable(Base):
         # PrimaryKeyConstraint('id', 'timestamp', name='pk_audit_logs'),
         Index("ix_audit_logs_tenant_log", "tenant_id", "id"),
         Index("ix_audit_logs_tenant", "tenant_id"),
-        Index("ix_audit_logs_severity", "severity"),
-        Index("ix_audit_logs_action_type", "action_type"),
-        Index("ix_audit_logs_timestamp", "timestamp"),
+        Index("idx_audit_logs_tenant_sev_ts", "tenant_id", "severity", "timestamp"),
 
         # Need to consider again for this partition
         # {"postgresql_partition_by": "RANGE (timestamp)"}

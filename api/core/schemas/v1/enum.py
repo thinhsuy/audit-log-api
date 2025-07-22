@@ -1,4 +1,5 @@
-from sqlalchemy import Enum
+from sqlalchemy import Enum as Pg_Enum
+from enum import Enum
 
 class ActionTypeEnum(str, Enum):
     CREATE = "CREATE"
@@ -30,7 +31,7 @@ class LogStatsEnum(str, Enum):
     VIEW_LOGS = "view_logs"
 
 # ------------------------- PG_ENUM ------------------
-action_type_enum = Enum(
+action_type_enum = Pg_Enum(
     ActionTypeEnum.CREATE,
     ActionTypeEnum.UPDATE,
     ActionTypeEnum.DELETE,
@@ -40,7 +41,7 @@ action_type_enum = Enum(
     name="action_type_enum",
 )
 
-severity_enum = Enum(
+severity_enum = Pg_Enum(
     SeverityEnum.INFO,
     SeverityEnum.WARNING,
     SeverityEnum.ERROR,
@@ -48,7 +49,7 @@ severity_enum = Enum(
     name="severity_enum",
 )
 
-user_role_enum = Enum(
+user_role_enum = Pg_Enum(
     UserRoleEnum.ADMIN,
     UserRoleEnum.CLIENT,
     name="user_role_enum",

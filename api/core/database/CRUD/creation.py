@@ -54,7 +54,7 @@ class PGCreation:
         log: AuditLog,
         tenant_id: str,
         user_id: str,
-    ) -> AuditLogTable:
+    ) -> AuditLog:
         try:
             data = log.model_dump(exclude_none=True)
             data.update({
@@ -66,7 +66,7 @@ class PGCreation:
             self.db.add(entry)
             await self.db.commit()
             await self.db.refresh(entry)
-            return entry
+            return log
         
         except asyncpg.exceptions.InvalidTextRepresentationError as e:
             logger.error(f"Invalid enum value error when creating log: {traceback.format_exc()}")

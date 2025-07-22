@@ -6,6 +6,18 @@ from core.routes.v1.tenant import router as TenantRouter
 from core.config import logger
 from contextlib import asynccontextmanager
 from core.database import init_db, get_engine, get_sessionmaker
+import asyncio
+
+async def periodic_task(interval_secs: int = 30):
+    """This function would run background lifespan of FastAPi every N seconds"""
+    while True:
+        try:
+            # TODO: send SQS clean message here
+            pass
+        except Exception as e:
+            logger.error(f"Error in periodic task: {e}")
+        await asyncio.sleep(interval_secs)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -16,12 +28,14 @@ async def lifespan(app: FastAPI):
     engine = get_engine()
     app.state.db_engine = engine
     app.state.db_sessionmaker = get_sessionmaker(engine)
+    app.state._periodic_task = asyncio.create_task(periodic_task())
 
     await init_db(engine)
     logger.info("Startup completed and tables created.")
 
     yield
 
+    app.state._periodic_task.cancel()
     await engine.dispose()
     logger.info("Disconnected database")
 
