@@ -16,13 +16,15 @@ DATA_DIR = Path(PACKAGE_DIR, "data")
 TEST_DIR = Path(PACKAGE_DIR, "test")
 dir = os.listdir()
 
-SECRET_KEY = "your_secret_key_here"
-ALGORITHM = "HS256" 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 WARNING_THRESHOLD = 50
 ERROR_THRESHOLD = 30
 CRITICAL_THRESHOLD = 10
 VIETNAM_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
+
+JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM")
+DATA_ENCRYPTION_KEY = os.environ.get("DATA_ENCRYPTION_KEY")
 
 DB_HOST = os.environ.get("DBHOST", None)
 DB_PORT = os.environ.get("DBPORT", None)
@@ -30,6 +32,7 @@ DB_USER = os.environ.get("DBUSER", None)
 DB_PASSWORD = os.environ.get("DBPASSWORD", None)
 DB_NAME = os.environ.get("DBNAME", None)
 AUDIT_USER_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 PANDAS_API_KEY = os.environ.get("PANDAS_API_KEY", None)
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")

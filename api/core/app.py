@@ -1,5 +1,6 @@
 from starlette.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
+from core.routes.v1.chatbot import router as ChatbotRouter
 from core.routes.v1.audit_log import router as AuditLogRouterV1
 from core.routes.authentication import router as AuthenticationRouter
 from core.routes.v1.tenant import router as TenantRouter
@@ -7,12 +8,12 @@ from core.config import logger
 from contextlib import asynccontextmanager
 from core.database import init_db, get_engine, get_sessionmaker
 import asyncio
+from core.services.bg_workers import BackgroundWorkers
 
 async def periodic_task(interval_secs: int = 30):
     """This function would run background lifespan of FastAPi every N seconds"""
     while True:
         try:
-            # TODO: send SQS clean message here
             pass
         except Exception as e:
             logger.error(f"Error in periodic task: {e}")
@@ -27,15 +28,21 @@ async def lifespan(app: FastAPI):
     """
     engine = get_engine()
     app.state.db_engine = engine
-    app.state.db_sessionmaker = get_sessionmaker(engine)
-    app.state._periodic_task = asyncio.create_task(periodic_task())
+    sessionmaker = get_sessionmaker(engine)
+    app.state.db_sessionmaker = sessionmaker
+    # app.state._periodic_task = asyncio.create_task(periodic_task())
+
+    app.state._bg_workers_task = asyncio.create_task(
+        BackgroundWorkers(sessionmaker).worker_loop()
+    )
 
     await init_db(engine)
     logger.info("Startup completed and tables created.")
 
     yield
 
-    app.state._periodic_task.cancel()
+    # app.state._periodic_task.cancel()
+    app.state._bg_workers_task.cancel()
     await engine.dispose()
     logger.info("Disconnected database")
 
@@ -47,6 +54,7 @@ app = FastAPI(
 app.include_router(AuthenticationRouter, tags=["Authentication"], prefix="/api/v1/authen")
 app.include_router(AuditLogRouterV1, tags=["Audit Log v1"], prefix="/api/v1/logs")
 app.include_router(TenantRouter, tags=["Tenant v1"], prefix="/api/v1/tenants")
+app.include_router(ChatbotRouter, tags=["Chatbot v1"], prefix="/api/v1/chat")
 
 @app.get("/", tags=["Root"])
 async def read_root():

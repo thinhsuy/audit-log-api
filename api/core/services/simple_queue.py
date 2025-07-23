@@ -6,6 +6,8 @@ from core.config import (
 import json
 import boto3
 from botocore.exceptions import ClientError
+from datetime import datetime
+from core.config import logger
 
 
 class SimpleQueueService:
@@ -19,38 +21,43 @@ class SimpleQueueService:
         self.queue_url: str = queue_url
 
     def send_message(self, payload: dict) -> str:
+        """Send message event to SQS server"""
         try:
             resp = self.sqs.send_message(
-                QueueUrl=self.queue_url, MessageBody=json.dumps(payload)
+                QueueUrl=self.queue_url,
+                MessageBody=json.dumps(
+                    payload,
+                    # auto convert datetime to ios string
+                    default=lambda o: o.isoformat() if isinstance(o, datetime) else str(o)
+                ),
+                
             )
             msg_id = resp["MessageId"]
-            print(f"[SQS][SEND] MessageId: {msg_id}")
+            logger.info(f"[SQS][SEND] Message: {payload}")
             return msg_id
         except ClientError as e:
-            print("[SQS][ERROR][send_message]", e)
-            raise
+            logger.error("[SQS][ERROR][send_message]", e)
+            return None
 
     def receive_messages(
         self,
         max_messages: int = 1,
         wait_seconds: int = 5,
-        visibility_timeout: int = 30,
+        visibility_timeout: int = 10,
     ):
         try:
             resp = self.sqs.receive_message(
                 QueueUrl=self.queue_url,
                 MaxNumberOfMessages=max_messages,
                 WaitTimeSeconds=wait_seconds,
-                VisibilityTimeout=30,
+                VisibilityTimeout=visibility_timeout,
             )
             msgs = resp.get("Messages", [])
-            print(f"[RECEIVE] Got {len(msgs)} message(s)")
             for m in msgs:
-                print("  - ReceiptHandle:", m["ReceiptHandle"])
-                print("    Body:", m["Body"])
+                logger.info("[RECEIVE][MESSAGE]: " + m["Body"])
             return msgs
         except ClientError as e:
-            print("[ERROR][receive_messages]", e)
+            logger.error("[RECEIVE][MESSAGE][ERROR][receive_messages]", e)
             raise
 
     def delete_message(self, receipt_handle: str):
@@ -58,9 +65,9 @@ class SimpleQueueService:
             self.sqs.delete_message(
                 QueueUrl=self.queue_url, ReceiptHandle=receipt_handle
             )
-            print(f"[DELETE] Success for handle {receipt_handle}")
+            logger.info(f"[DELETE] Success for handle {receipt_handle[:10]}")
         except ClientError as e:
-            print("[ERROR][delete_message]", e)
+            logger.error("[DELETE][MESSAGE][ERROR]", e)
             raise
 
     def clear_queue(self, batch_size=10):

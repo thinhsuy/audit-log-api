@@ -42,7 +42,7 @@ async def list_out_tenants(
     except Exception:
         message = "Failed to retrieve tenants!"
         logger.error(f"{message}: {traceback.format_exc()}")
-        return ListTenantsResponse(message=message)
+        raise HTTPException(status_code=500, detail=message)
 
 @router.post(
     "/",
@@ -71,4 +71,4 @@ async def create_tenant(
     except Exception:
         message = "Failed to create tenant!"
         logger.error(f"{message}: {traceback.format_exc()}")
-        return ListTenantsResponse(message=message)
+        raise HTTPException(status_code=500, detail=message)

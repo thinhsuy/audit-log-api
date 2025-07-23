@@ -10,14 +10,14 @@ import uuid
 from sqlalchemy.sql import func
 from typing import Optional
 from sqlalchemy import String
-from core.schemas.v1.enum import user_role_enum
+from core.schemas.v1.enum import user_role_enum, UserRoleEnum
 from core. schemas.base import BaseObject
 
 class User(BaseObject):
     tenant_id: str
     username: str
     email: Optional[str] = None
-    role: str = None
+    role: UserRoleEnum = None
 
 class UserTable(Base):
     """
@@ -45,7 +45,7 @@ class UserTable(Base):
     )
     username = Column(String, nullable=False)
     email = Column(String, nullable=True)
-    role = Column(user_role_enum, nullable=False)
+    role = Column(user_role_enum, default=UserRoleEnum.CLIENT, nullable=False)
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),

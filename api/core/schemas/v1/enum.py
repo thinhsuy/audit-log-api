@@ -30,6 +30,12 @@ class LogStatsEnum(str, Enum):
     DELETE_LOGS = "delete_logs"
     VIEW_LOGS = "view_logs"
 
+class ChatRoleEnum(str, Enum):
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"
+    TOOL = "tool"
+
 # ------------------------- PG_ENUM ------------------
 action_type_enum = Pg_Enum(
     ActionTypeEnum.CREATE,

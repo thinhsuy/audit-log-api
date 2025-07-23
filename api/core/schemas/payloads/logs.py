@@ -8,7 +8,7 @@ class CreateLogPayload(AuditLog):
 
 class LogEntryCreateResponse(BaseModel):
     message: str
-    log: Optional[dict] = None
+    log: Optional[AuditLog] = None
 
 class GetLogsResponse(BaseModel):
     message: str
@@ -20,7 +20,7 @@ class GetLogResponse(BaseModel):
 
 class BulkLogCreateResponse(BaseModel):
     message: str
-    logs: List[AuditLog]
+    logs: Optional[List[AuditLog]] = None
 
 class CleanupLogPayload(BaseModel):
     retention_days: int

@@ -9,8 +9,7 @@ from sqlalchemy import (
     Text,
     JSON,
     ForeignKey,
-    Index,
-    PrimaryKeyConstraint
+    Index
 )
 import uuid
 from sqlalchemy.sql import func
@@ -29,26 +28,16 @@ class AuditLog(BaseObject):
     """Base object of AuditLog"""
     id: Optional[str] = str(uuid.uuid4())
     session_id: Optional[str] = None
-    action_type: str
+    action_type: ActionTypeEnum
     resource_type: str
     resource_id: Optional[str] = None
-    severity: Optional[str] = None
+    severity: Optional[SeverityEnum] = None
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
     before_state: Optional[Dict[str, Any]] = None
     after_state: Optional[Dict[str, Any]] = None
     meta_data: Optional[Dict[str, Any]] = None
     timestamp: Optional[datetime] = None
-
-class LogFilterParams(BaseObject):
-    start_date: Optional[datetime] = None
-    end_date: Optional[datetime] = None
-    action_type: Optional[str] = None
-    resource_type: Optional[str] = None
-    severity: Optional[str] = None
-    keyword: Optional[str] = None
-    limit: int = 10
-    offset: int = 0
 
 class AuditLogTable(Base):
     """This is the table for loging information of logs.
@@ -99,7 +88,7 @@ class AuditLogTable(Base):
     user_agent = Column(Text, nullable=True)
     before_state = Column(JSON, nullable=True)
     after_state = Column(JSON, nullable=True)
-    meta_data = Column(JSON, nullable=True)
+    meta_data = Column(String, nullable=True)
     timestamp = Column(
         DateTime(timezone=True),
         server_default=func.now(),

@@ -1,20 +1,7 @@
 from openai import AsyncAzureOpenAI
-from typing import List, Annotated
-from pydantic import BaseModel
-from enum import Enum
+from typing import List
 import json
-from openai.types.chat import ChatCompletionMessageToolCall
-
-class RoleEnum(str, Enum):
-    USER = "user"
-    ASSISTANT = "assistant"
-    SYSTEM = "system"
-    TOOL = "tool"
-
-class Conversation(BaseModel):
-    role: RoleEnum
-    content: str
-    tool_calls: List[ChatCompletionMessageToolCall] = None
+from core.schemas.v1.chat import Conversation
 
 class LargeLanguageModel:
     def __init__(self, engine: str, client: AsyncAzureOpenAI):
@@ -27,7 +14,7 @@ class LargeLanguageModel:
         conversation: List[Conversation] = None,
         max_tokens: int = None,
         response_format: dict = {"type": "json_object"}
-    ) -> Annotated[str, dict]:
+    ) -> str | dict:
         response = await self.client.chat.completions.create(
             model=self.engine,
             messages=[

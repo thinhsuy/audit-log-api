@@ -8,7 +8,8 @@ from core.agent.tool_format import (
     AgentResponseFormat,
     ToolCallFormat
 )
-from core.agent import Conversation, RoleEnum
+from core.schemas.v1.chat import Conversation
+from core.schemas.v1.enum import ChatRoleEnum
 from typing import List
 
 class SmartAgent:
@@ -49,7 +50,7 @@ class SmartAgent:
             convers for convers in conversation
             if (
                 isinstance(convers, Conversation) and
-                convers.role in [RoleEnum.SYSTEM, RoleEnum.USER, RoleEnum.ASSISTANT]
+                convers.role in [ChatRoleEnum.SYSTEM, ChatRoleEnum.USER, ChatRoleEnum.ASSISTANT]
             )
         ]
 
@@ -65,7 +66,7 @@ class SmartAgent:
             conversation = self.init_history.copy()
 
         conversation.append(
-            Conversation(role=RoleEnum.USER, content=user_input)
+            Conversation(role=ChatRoleEnum.USER, content=user_input)
         )
         tool_call_results: list[ToolResponseFormat] = []
         tool_call_trackback: list[ToolCallFormat] = []
@@ -75,7 +76,7 @@ class SmartAgent:
             response = await self.client.chat.completions.create(
                 model=self.engine,
                 messages=[
-                    convers.model_dump(exclude_none=True)
+                    convers.chat_format_dump()
                     for convers in conversation
                 ],
                 tools=self.functions_spec,
