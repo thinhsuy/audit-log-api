@@ -34,6 +34,46 @@ AGENT = SmartAgent(
     functions_spec=AUDIT_LOG_FUNCTION_SPEC,
 )
 
+@router.get(
+    "/",
+    description="Get history chat (tenant-scoped)",
+    response_model=GetHistoryResponse,
+)
+@Limiter.limit(RATE_LIMITER.default_limit)
+async def get_chat_history(
+    token: TokenDependencies,
+    request: Request,
+    db: AsyncSession = Depends(async_get_db),
+):
+    try:
+        token_data = AuthenService.verify_token(token.credentials)
+        if not token_data:
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
+
+        tenant_id = token_data.get("tenant_id", None)
+        if not tenant_id:
+            raise HTTPException(
+                status_code=401, detail="Invalid tenant_id."
+            )
+
+        history = await PGRetrieve(db).retrieve_chat_history(
+            tenant_id=tenant_id
+        )
+
+        return GetHistoryResponse(
+            message="Retrieve chat history successfully!",
+            history=history,
+        )
+
+    except HTTPException:
+        raise
+    except Exception:
+        message = "Failed to get chat history from chatbot agent!"
+        logger.error(f"{message}: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=message)
+
 
 @router.post(
     "/",
@@ -103,46 +143,5 @@ async def get_chat_response(
         raise
     except Exception:
         message = "Failed to get response from chatbot agent!"
-        logger.error(f"{message}: {traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail=message)
-
-
-@router.get(
-    "/",
-    description="Get history chat (tenant-scoped)",
-    response_model=GetHistoryResponse,
-)
-@Limiter.limit(RATE_LIMITER.default_limit)
-async def get_chat_response(
-    token: TokenDependencies,
-    request: Request,
-    db: AsyncSession = Depends(async_get_db),
-):
-    try:
-        token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
-
-        tenant_id = token_data.get("tenant_id", None)
-        if not tenant_id:
-            raise HTTPException(
-                status_code=401, detail="Invalid tenant_id."
-            )
-
-        history = await PGRetrieve(db).retrieve_chat_history(
-            tenant_id=tenant_id
-        )
-
-        return GetHistoryResponse(
-            message="Retrieve chat history successfully!",
-            history=history,
-        )
-
-    except HTTPException:
-        raise
-    except Exception:
-        message = "Failed to get chat history from chatbot agent!"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)

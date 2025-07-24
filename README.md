@@ -8,8 +8,7 @@ To enable administrators to query audit logs seamlessly across any platform, I b
 
 ---
 ## Demo Deployment
-- The APIs is already deployed at [here]()
-- The APIs document (Swagger) is deployed at [here]()
+- The APIs document (Swagger) is deployed at [here](https://travist-audit-log-api.orangecoast-1a9ad26f.southeastasia.azurecontainerapps.io/docs)
 - The Streamlit Dashboard is deployed at [here]()
 
 ---
@@ -44,9 +43,9 @@ audit-logs/
 │   ├── core/
 │   │   ├── agent/            # LLM / tool integrations
 │   │   ├── data/             # Static lookup tables and JSON fixtures
-│   │   ├── database/         # ORM models, migrations, and CRUD operations
+│   │   ├── database/         # ORM models and CRUD operations
 │   │   ├── routes/           # API route definitions
-│   │   ├── schemas/          # Pydantic models for request/response and DB tables
+│   │   ├── schemas/          # Pydantic models for request/response and DB tables schemas
 │   │   ├── services/         # Business logic and external service adapters
 │   │   ├── test/             # Unit- and integration-tests with pytest
 │   │   ├── app.py            # FastAPI application factory
@@ -161,7 +160,7 @@ To ensure a robust, secure, and highly scalable Audit Log API, I adopted the fol
 
 ---
 
-### Deployment
+### Services Deployed
 
 - **Containerized Microservices**  
   - **Azure Container Instances (ACI)** deploy the FastAPI backend and Streamlit UI as Docker containers.  
@@ -234,3 +233,24 @@ flowchart TD
     EXPERTISE --> MASTER & TOOLS
     TOOLS --> POSTGRES
 ```
+
+1. **JWT Authentication**  
+   Every incoming HTTP request carries a signed JSON Web Token. FastAPI’s dependency layer verifies the token signature, extracts the `tenant_id` and `user_role`, and rejects any malformed or expired tokens.
+
+2. **Tenant & Role Validation**  
+   Once the JWT is validated, a second check ensures that the token’s tenant context matches the target tenant (Tenant Authentication). The user’s role (`Admin`, `User`, or `Auditor`) is then enforced via FastAPI dependencies to gate access to each route.
+
+3. **Rate Limiting**  
+   Validated requests enter our rate-limiting middleware (`limiter.py`), which uses a Redis-backed token bucket algorithm to throttle.
+
+4. **Router Dispatch & Database Access**  
+   Approved requests are dispatched to the appropriate FastAPI router. Each handler uses SQLAlchemy to query the AWS Lightsail PostgreSQL instance.
+
+5. **Background Task**  
+   For endpoints that trigger asynchronous work (e.g., log aggregation or cleanup), the service publishes messages to a tenant-scoped AWS SQS queue. Dedicated workers consume these messages to run:
+
+6. **Natural-Language Query Handling (Agent System)**  
+   If a user submits a conversational query:
+   - The **Master Agent** parses intent and routes the request to an **Expertise Agent**.  
+   - The Expertise Agent executes a Retrieval-Augmented Generation (RAG) pipeline—using a vector store of recent logs—and performs DataFrame operations (via Pandas) to filter, aggregate, and analyze results.  
+   - Once processing completes, the Master Agent formats the answer and returns a human-readable response.

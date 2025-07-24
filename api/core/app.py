@@ -73,6 +73,7 @@ app.include_router(
 app.include_router(
     ChatbotRouter,
     tags=["Chatbot v1"],
+    prefix="/api/v1/chat"
 )
 app.include_router(
     WsRouter, tags=["Websocket Audit Log v1"], prefix="/api/v1/logs"
