@@ -1,341 +1,236 @@
-# Code Challenge: Audit Log API
+## Audit Log API System
 
-## Objective
+To enable administrators to query audit logs seamlessly across any platform, I built a high-throughput, secure Audit Log API system. The design goals were:
 
-Develop a comprehensive audit logging API system that tracks and manages user actions across different applications. This system should be designed to handle high-volume logging, provide search and filtering capabilities, and ensure data integrity and security.
+- **Scalability**: Handle large volumes of concurrent queries with minimal latency  
+- **Security**: Enforce authentication, authorization, and rate-limiting at every layer  
+- **Portability**: Deployable via containers on any cloud or on-prem environment
 
-## Requirements:
+---
+## Demo Deployment
+- The APIs is already deployed at [here]()
+- The APIs document (Swagger) is deployed at [here]()
+- The Streamlit Dashboard is deployed at [here]()
 
-### Core Features:
+---
+## How to set up
+- Please config the `.env` with given sample keys in `sample.env` to run this repo.
+```bash
+# (optional) instal virtual envs, we require version of python
+conda create --name yourenv python==3.11
+conda actiate yourenv
 
-#### Audit Log Management:
-- **Log Entry Creation**: API endpoints to create audit log entries with metadata
-- **Structured Data**: Each log entry should include:
-  - User ID and session information
-  - Action performed (CREATE, UPDATE, DELETE, VIEW, etc.)
-  - Resource type and ID (e.g., "user", "order", "product")
-  - Timestamp with timezone
-  - IP address and user agent
-  - Before/after state changes (for modifications)
-  - Custom metadata fields
-  - Severity level (INFO, WARNING, ERROR, CRITICAL)
-  - **Tenant ID**: Multi-tenant support for multiple applications/organizations
+# install env package
+git clone https://github.com/thinhsuy/audit-log-api.git
+cd audit-log-api
 
-#### Search and Retrieval:
-- **Advanced Search**: Filter logs by date range, user, action type, resource type, severity, **tenant ID**
-- **Full-text Search**: Search through log messages and metadata
-- **Pagination**: Handle large result sets efficiently
-- **Export Functionality**: Export logs in JSON, CSV formats
-- **Real-time Log Streaming**: WebSocket endpoint for real-time log monitoring
-- **Tenant Isolation**: Ensure complete data isolation between tenants
-
-#### Data Management:
-- **Data Retention**: Configurable retention policies (e.g., keep logs for 90 days)
-- **Data Archival**: Move old logs to cold storage
-- **Data Compression**: Efficient storage for large log volumes
-- **Backup and Recovery**: Automated backup procedures
-
-### Technical Requirements:
-
-#### API Design:
-- **API Gateway**: Choose between AWS API Gateway or Application Load Balancer based on requirements
-- **RESTful API** following OpenAPI 3.0 specification
-- **Authentication**: JWT-based authentication
-- **Authorization**: Role-based access (Admin, Auditor, User) with **tenant-based access control**
-- **Rate Limiting**: Prevent API abuse
-- **Request Validation**: Input sanitization and validation
-- **Error Handling**: Proper HTTP status codes and error messages
-- **Search Integration**: OpenSearch for advanced search capabilities
-- **Multi-tenancy**: Support for multiple tenants with complete data isolation
-
-#### Database Design:
-- **Database Choice**: Select one of the three options based on your preference and requirements:
-  - **PostgreSQL + TimescaleDB**: Optimized for time-series data with efficient partitioning
-  - **MongoDB**: Document-based storage with flexible schema for audit logs
-  - **DynamoDB**: Serverless NoSQL with automatic scaling and built-in encryption
-- **Multi-tenant Schema**: Design schema to support multiple tenants with proper isolation
-- **Optimized Schema**: Design for high-volume writes and complex queries based on your chosen database
-- **Indexing Strategy**: Efficient indexes for search operations (database-specific) including tenant-based indexes
-- **Data Partitioning**: Consider time-based and tenant-based partitioning for large datasets
-- **Connection Pooling**: Handle concurrent requests efficiently
-
-#### Performance:
-- **High Throughput**: Handle 1000+ log entries per second
-- **Low Latency**: Sub-100ms response times for search queries
-- **Message Queue**: AWS SQS for background task processing and data archival
-- **Async Processing**: Background tasks for data archival and cleanup using SQS
-
-#### Security:
-- **Data Encryption**: Encrypt sensitive log data at rest
-- **Access Control**: Fine-grained permissions for log access with tenant isolation
-- **Audit Trail**: Log access to the audit logs themselves
-- **Data Masking**: Mask sensitive information in logs (PII, passwords)
-- **Tenant Isolation**: Complete data isolation between tenants at all levels
-- **Cross-tenant Protection**: Prevent data leakage between tenants
-
-### Implementation Details:
-
-#### Technology Stack:
-- **Framework**: Django or FastAPI
-- **API Gateway**: Choose one of:
-  - **AWS API Gateway** (for serverless, managed API management)
-  - **Application Load Balancer (ALB)** (for traditional load balancing)
-- **Database**: Choose one of:
-  - **PostgreSQL** with TimescaleDB extension (for time-series data)
-  - **MongoDB** (for document-based storage)
-  - **DynamoDB** (for serverless, scalable NoSQL)
-- **Message Queue**: AWS SQS for background task processing
-- **Search**: OpenSearch (optional, for advanced search capabilities)
-
-#### API Endpoints:
-```
-POST   /api/v1/logs                    # Create log entry (with tenant ID)
-GET    /api/v1/logs                    # Search/filter logs (tenant-scoped)
-GET    /api/v1/logs/{id}              # Get specific log entry (tenant-scoped)
-GET    /api/v1/logs/export            # Export logs (tenant-scoped)
-GET    /api/v1/logs/stats             # Get log statistics (tenant-scoped)
-POST   /api/v1/logs/bulk              # Bulk log creation (with tenant ID)
-DELETE /api/v1/logs/cleanup           # Cleanup old logs (tenant-scoped)
-WS     /api/v1/logs/stream            # Real-time log streaming (tenant-scoped)
-GET    /api/v1/tenants                # List accessible tenants (admin only)
-POST   /api/v1/tenants                # Create new tenant (admin only)
+# install and start API
+pip install poetry
+poetry config virtualenvs.create false
+cd api && poetry install
+cd api/core && python main.py
 ```
 
-#### System Architecture:
+---
+
+### Repository Layout
+
+```bash
+audit-logs/
+├── .gitignore
+├── docker-compose.yml        # Defines multi-container setup (API, Nginx, etc.)
+├── nginx.conf                # Nginx reverse-proxy and load-balancing config
+├── api/
+│   ├── core/
+│   │   ├── agent/            # LLM / tool integrations
+│   │   ├── data/             # Static lookup tables and JSON fixtures
+│   │   ├── database/         # ORM models, migrations, and CRUD operations
+│   │   ├── routes/           # API route definitions
+│   │   ├── schemas/          # Pydantic models for request/response and DB tables
+│   │   ├── services/         # Business logic and external service adapters
+│   │   ├── test/             # Unit- and integration-tests with pytest
+│   │   ├── app.py            # FastAPI application factory
+│   │   ├── config.py         # Environment-based configuration loader
+│   │   └── limiter.py        # Rate-limit middleware setup
+│   ├── main.py               # Entry point for running the API server
+│   ├── pyproject.toml        # Poetry project file
+│   ├── Dockerfile            # Container image definition for the API
+│   └── deployment.sh         # Deployment script (CI/CD integration)
+├── logs/                     # Directory for persisted log files (if any)
+└── ui/
+    ├── core/
+    │   └── main.py           # Streamlit dashboard for real-time monitoring
+    ├── pyproject.toml        # Poetry config for UI service
+    └── Dockerfile            # Container image for Streamlit UI
+```
+
+---
+
+### API Design
+
+To ensure a robust, secure, and highly scalable Audit Log API, I adopted the following design principles and technologies:
+
+
+- **Authentication**  
+  Every request must present a short-lived **access token** generated at login. Tokens are issued per `tenant_id` and `user_id`, and encapsulate:
+  - The current tenant and user identity
+  - Token expiration (configurable TTL)  
+  Tokens are signed and optionally encrypted to prevent tampering.
+
+- **Authorization & Role-Based Access Control (RBAC)**  
+  Each access token carries a **role claim** (`Admin`, `User`, or `Auditor`).  
+  - **Admin**: Full CRUD on logs and system configuration  
+  - **User**: Create and query logs within their own tenant scope  
+  - **Auditor**: Read-only access across all logs of a tenant
+
+- **Rate Limiting**  
+  To protect downstream systems and meet performance targets:
+  - **Log-related routes** are capped at **10,000 requests/min** (load-tested for high throughput)  
+  - **Non-log routes** are limited to **100 requests/min**  
+
+- **Request & Response Validation**  
+  All endpoints use **Pydantic** models to declare:
+  - Required and optional fields in the request payload  
+  - Field types, formats, and value constraints  
+  - Response schemas for consistent API contracts  
+  This ensures early rejection of malformed data and auto-generated OpenAPI documentation.
+
+- **Error Handling**  
+  - Business logic errors raise `HTTPException` with meaningful status codes and error messages  
+  - Unhandled exceptions are caught by a global error handler, which logs the incident and returns a sanitized 5xx response
+
+- **Search Integration**  
+  Rather than a generic text index (e.g., OpenSearch), I integrated a **Smart Chatbot Agent** for natural-language log searches.  
+  - Allows complex queries like “Show all ERROR logs for tenant X between 2025-07-01 and 2025-07-24”  
+  - Leverages LLM-powered intent parsing to translate user queries into optimized database filters
+
+- **Multi-Tenancy**  
+  Each request is scoped by its access token, which encodes the tenant context.  
+  - All database queries automatically filter by `tenant_id`  
+  - Tokens are rotated per session to minimize risk  
+  - Encryption of tenant claims prevents cross-tenant data leaks
+
+---
+
+### Database Design
+- **Database Platform**  
+  I chose Amazon Lightsail’s managed PostgreSQL (1 GB RAM, 2 vCPUs) for its cost-effective, fully managed environment and predictable performance.
+
+![database schemas](api/core/data/database_schemas.png)
+
+- **Schema Optimization**  
+  To minimize complex joins and streamline query paths, the schema consists of six core tables:
+  - `audit_logs` – Stores every user action, scoped by tenant
+  - `tenants` – Maintains tenant metadata and configuration  
+  - `users` – Holds user profiles, each tied to a specific tenant  
+  - `sessions` – Tracks login sessions and service usage events  
+  - `conversations` – Captures per-tenant chatbot dialog history  
+  - `mask_users` – Archives masked user records for privacy-compliant access
+
+- **Indexing Strategy**  
+  I created B-tree indexes and composition indexes on all high-cardinality and filterable columns—such as `tenant_id`, `user_id` and `timestamp`.
+
+- **Partitioning**  
+  Implemented declarative partitioning on the `audit_logs` table by `tenant_id`. This allows:
+  - Efficient data pruning and archival per tenant  
+  - Improved I/O locality for tenant-specific queries  
+
+- **Connection Pooling**  
+  Given the modest Lightsail instance, I tuned the DB driver’s pool settings to:
+  - **Pool size**: 5  
+  - **Max overflow**: 10  
+  - **Connection timeout**: 30 seconds
+
+- **Triggers & Data Masking**  
+  For both `audit_logs` and `users`, I defined DDL triggers to:
+  1. Automatically mask sensitive fields on INSERT/UPDATE  
+  2. Archive the original (unmasked) payload into a restricted `mask_users` table
+
+---
+
+### Security
+
+- **Data Encryption**  
+   Sensitive log payloads (e.g. `meta_data`) are encrypted using AES-GCM before transit and at rest.
+
+- **Fine-Grained Access Control**  
+  Every request must present a JWT access token scoped to a single `tenant_id` and `user_id`. Tokens carry role claims (`Admin`, `User`, `Auditor`) and expire after a configurable TTL. FastAPI dependency injections validate token signatures which could decoded into roles, and tenant context on each route.
+
+- **Database-Level Data Masking**  
+  PostgreSQL triggers automatically mask PII on INSERT/UPDATE into the `users` table. The original unmasked records are vaulted to a restricted `mask_users` table accessible only by audit-compliant processes. This ensures live queries never expose raw sensitive data.
+
+---
+
+### Deployment
+
+- **Containerized Microservices**  
+  - **Azure Container Instances (ACI)** deploy the FastAPI backend and Streamlit UI as Docker containers.  
+  - Images are built via `Dockerfile` and stored in Azure Container Registry (ACR).
+
+- **Database Hosting**  
+  - AWS Lightsail PostgreSQL (1 GB RAM, 2 vCPU) provides a cost-effective, managed relational store.  
+  - Backups and automated minor version upgrades are configured via Lightsail console.
+
+- **Message Queue & Background Processing**  
+  - AWS SQS handles background jobs (e.g., stats caluclation, alert dispatch).  
+  - Worker processes (Celery or FastAPI background tasks) consume SQS messages to perform asynchronous actions and trigger alerts.
+
+---
+
+### Additional Feature: Chatbot Agent System
+
+To enable natural-language querying over audit data, I integrated an AI-driven Agent subsystem:
+
+1. **Retrieval-Augmented Generation (RAG)**  
+   - A lightweight vector store indexes recent logs; semantic embeddings allow similarity searches and pandas dataframe smart logics retrieve data algorithm. 
+   - Upon user query, relevant log fragments are retrieved and passed to an LLM prompt.
+
+2. **Agent-to-Agent Chains of Thought**  
+   - I orchestrate multiple agent roles (e.g., MasterAgent, RetrievalAgent).  
+   - Each agent processes structured payloads, applies business rules, and hands off context—ensuring accurate, auditable responses.
+
+---
+
+### System Architecture
 ```mermaid
-graph TB
-    subgraph "Client Applications"
-        App1[Application 1<br/>Tenant A]
-        App2[Application 2<br/>Tenant B]
-        App3[Application 3<br/>Tenant C]
+flowchart TD
+    subgraph subGraph0["Audit Log Api"]
+        JWT["JWT Authentication"]
+        TA["Tenant Authenication"]
+        RATE["Rate Limiting"]
     end
-    
-    subgraph "API Gateway Layer"
-        APIGateway[AWS API Gateway]
-        ALB[Application Load Balancer]
+    subgraph subGraph1["Core Serivces"]
+        LOGS["Logs service Multi-tenants"]
+        EXPORT["Export service Tenant-scoped"]
+        SEARCH["Search service Tenant-scoped"]
+        STREAM["Stream service Tenant-scoped"]
     end
-    
-    subgraph "Audit Log API"
-        Auth[Authentication]
-        TenantAuth[Tenant Authorization]
-        RateLimit[Rate Limiting]
+    subgraph subGraph2["Data Layer"]
+        POSTGRES[("AWS Lightsail Postgres")]
     end
-    
-    subgraph "Core Services"
-        LogService[Log Service<br/>Multi-tenant]
-        SearchService[Search Service<br/>Tenant-scoped]
-        ExportService[Export Service<br/>Tenant-scoped]
-        StreamService[Stream Service<br/>Tenant-scoped]
+    subgraph subGraph3["Message Queue"]
+        SQS[("AWS SQS Tenant-scoped")]
     end
-    
-    subgraph "Data Layer"
-        PostgreSQL[(PostgreSQL + TimescaleDB<br/>Tenant-partitioned)]
-        MongoDB[(MongoDB<br/>Tenant-collections)]
-        DynamoDB[(DynamoDB<br/>Tenant-partitioned)]
-        OpenSearch[(OpenSearch<br/>Tenant-indices)]
+    subgraph subGraph4["Background Service"]
+        STATS["Stats/Alert Worker"]
+        CLEAN["Data clean Worker"]
     end
-    
-    subgraph "Message Queue"
-        SQS[AWS SQS<br/>Tenant-queues]
+    subgraph subGraph5["Agent Layer"]
+        MASTER["Master Agent"]
+        EXPERTISE["Expertise Agent"]
+        TOOLS["RAG Tools"]
     end
-    
-    subgraph "Background Services"
-        Workers[SQS Workers<br/>Tenant-aware]
-        Cleanup[Data Cleanup<br/>Tenant-scoped]
-        Archive[Data Archival<br/>Tenant-scoped]
-    end
-    
-    App1 --> APIGateway
-    App1 --> ALB
-    App2 --> APIGateway
-    App2 --> ALB
-    App3 --> APIGateway
-    App3 --> ALB
-    
-    APIGateway --> Auth
-    ALB --> Auth
-    Auth --> TenantAuth
-    TenantAuth --> RateLimit
-    RateLimit --> LogService
-    RateLimit --> SearchService
-    RateLimit --> ExportService
-    RateLimit --> StreamService
-    
-    LogService --> PostgreSQL
-    LogService --> MongoDB
-    LogService --> DynamoDB
-    SearchService --> OpenSearch
-    ExportService --> PostgreSQL
-    ExportService --> MongoDB
-    ExportService --> DynamoDB
-    
-    LogService --> SQS
-    Workers --> SQS
-    Cleanup --> SQS
-    Archive --> SQS
+    Client["Client"] --> GATE["API Gateway"]
+    GATE --> JWT & UI["Dashboard Streamlit"]
+    JWT --> TA
+    TA --> RATE
+    RATE --> LOGS & EXPORT & SEARCH & STREAM & MASTER
+    LOGS --> POSTGRES & SQS
+    EXPORT --> POSTGRES
+    SEARCH --> POSTGRES
+    STATS --> SQS
+    CLEAN --> SQS
+    MASTER --> EXPERTISE
+    EXPERTISE --> MASTER & TOOLS
+    TOOLS --> POSTGRES
 ```
-
-#### Audit Log Flow:
-```mermaid
-sequenceDiagram
-    participant Client as Client App<br/>(Tenant A)
-    participant Gateway as API Gateway/ALB
-    participant Auth as Auth Service
-    participant TenantAuth as Tenant Auth
-    participant Log as Log Service
-    participant DB as Database (Tenant A)
-    participant SQS as AWS SQS
-    participant Search as OpenSearch
-    participant Worker as SQS Worker
-    
-    Client->>Gateway: POST /api/v1/logs<br/>(tenant_id: A)
-    Gateway->>Auth: Validate JWT Token
-    Auth-->>Gateway: Token Valid
-    Gateway->>TenantAuth: Validate Tenant Access
-    TenantAuth-->>Gateway: Tenant Access Granted
-    Gateway->>Log: Create Log Entry (Tenant A)
-    Log->>DB: Store Log Entry (Tenant A)
-    Log->>SQS: Queue Background Tasks (Tenant A)
-    Log-->>Gateway: Log Created
-    Gateway-->>Client: 201 Created
-    
-    Note over SQS,Worker: Background Processing (Tenant A)
-    SQS->>Worker: Process Background Tasks
-    Worker->>Search: Index for Search (Tenant A)
-    Worker->>DB: Data Cleanup/Archival (Tenant A)
-    
-    Note over Client,Search: Real-time Streaming (Tenant A)
-    Client->>Gateway: WS /api/v1/logs/stream<br/>(tenant_id: A)
-    Gateway->>Log: Subscribe to Stream (Tenant A)
-    Log->>Client: Real-time Log Updates (Tenant A)
-```
-
-### Testing:
-
-- **Unit Tests**: >85% code coverage
-- **Integration Tests**: API endpoint testing
-- **Performance Tests**: Load testing with realistic data volumes
-- **Security Tests**: Authentication and authorization testing
-
-### Documentation:
-
-- **API Documentation**: OpenAPI/Swagger documentation
-- **Setup Instructions**: Clear deployment and configuration guide
-- **Architecture Diagram**: System design and data flow
-- **Code Documentation**: Inline comments and docstrings
-
-### Bonus Features (Optional):
-
-- **Alert System**: Configure alerts for specific log patterns
-- **Dashboard**: Simple web interface for log visualization
-- **Log Analytics**: Basic analytics and reporting
-- **Log Correlation**: Group related log entries by request ID
-
-### Submission:
-
-- **Git Repository**: Clean, well-structured code
-- **README**: Comprehensive setup and usage instructions
-- **API Documentation**: Complete endpoint documentation
-- **Postman Collection**: Test the API endpoints
-- **Architecture Diagram**: System design overview
-- **Live Demo**: Deployed application (optional)
-
-### Evaluation Criteria:
-
-#### Code Quality & Architecture (30%):
-- **Code Structure**: Clean, maintainable, and well-structured code
-- **API Design**: RESTful principles, proper error handling, validation
-- **Database Design**: Efficient schema design and query optimization with multi-tenant support
-- **Multi-tenancy**: Proper implementation of tenant isolation and access control
-- **Technical Decisions**: Justification of technology choices and architecture
-
-#### Performance & Scalability (25%):
-- **High Throughput**: Ability to handle 1000+ log entries per second
-- **Low Latency**: Sub-100ms response times for search queries
-- **Message Queue**: Effective use of AWS SQS for background processing
-- **Database Optimization**: Efficient design and query performance for chosen database
-
-#### Security & Compliance (20%):
-- **Authentication**: Proper JWT-based authentication implementation
-- **Authorization**: Role-based access control and fine-grained permissions with tenant isolation
-- **Data Protection**: Encryption at rest and in transit
-- **Input Validation**: Proper sanitization and validation of all inputs
-- **Tenant Isolation**: Complete data isolation between tenants
-
-#### Testing & Documentation (15%):
-- **Test Coverage**: >85% code coverage with comprehensive testing
-- **API Documentation**: Complete OpenAPI/Swagger documentation
-- **Setup Instructions**: Clear deployment and configuration guide
-- **Code Documentation**: Inline comments and comprehensive docstrings
-
-#### Problem Solving & Innovation (10%):
-- **Complex Requirements**: Ability to handle complex requirements efficiently
-- **Creative Solutions**: Innovative approaches to technical challenges
-- **Database Choice**: Justification and implementation of chosen database technology
-- **API Gateway Choice**: Selection and implementation of API Gateway or ALB
-- **SQS Integration**: Effective use of AWS SQS for background processing
-- **OpenSearch Integration**: Implementation of advanced search capabilities
-- **Multi-tenancy**: Effective implementation of tenant isolation and access control
-- **Bonus Features**: Implementation of optional advanced features
-- **Performance Optimization**: Creative solutions for performance challenges
-
-## Timeline:
-
-This challenge is designed to be completed in **3-5 business days**:
-
-#### **Days 1-2: Core API Development**
-- Set up project structure and technology stack
-- Choose and configure database (PostgreSQL/MongoDB/DynamoDB)
-- Set up API Gateway or ALB
-- Implement core audit log management features
-- Design and implement database schema
-- Create basic API endpoints
-- Set up AWS SQS for background processing
-- Configure OpenSearch for search capabilities
-
-#### **Days 3-4: Advanced Features & Testing**
-- Implement search, filtering, and export functionality
-- Add real-time streaming capabilities
-- Implement security and authentication
-- Create comprehensive test suite
-
-#### **Day 5: Documentation & Final Review**
-- Complete API documentation
-- Create architecture diagrams
-- Final testing and optimization
-- Prepare submission materials
-
-Focus on delivering a working MVP with core features rather than implementing all bonus features.
-
-## Priority Focus Areas:
-
-#### **Must Complete (High Priority):**
-- Core audit log creation and retrieval API endpoints
-- Database setup and configuration (PostgreSQL/MongoDB/DynamoDB)
-- API Gateway or ALB setup and configuration
-- Basic search and filtering functionality
-- Database schema design and implementation with multi-tenant support
-- Authentication and authorization system with tenant isolation
-- Basic security controls and data validation
-- AWS SQS setup for background processing
-- OpenSearch setup for search capabilities
-- Multi-tenant implementation and tenant management
-
-#### **Should Complete (Medium Priority):**
-- Advanced search with full-text capabilities using OpenSearch
-- Real-time log streaming via WebSocket
-- Data retention and archival policies using SQS
-- Performance optimization and database-specific tuning
-- Comprehensive test coverage
-- SQS worker implementation for background tasks
-- API Gateway/ALB advanced features (rate limiting, caching)
-
-#### **Nice to Have (Low Priority):**
-- Export functionality (JSON, CSV)
-- Dashboard and visualization interface
-- Advanced analytics and reporting
-- Alert system for log patterns
-
-## Questions?
-
-Any questions you may have, please contact us by e-mail.

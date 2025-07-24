@@ -14,9 +14,6 @@ RUN poetry config virtualenvs.create false
 # Copy necessary files
 COPY pyproject.toml README.md /app/
 COPY core /app/core
-
-RUN pip install --no-cache-dir
-
 RUN poetry install --no-interaction --no-ansi
 
 COPY . /app
