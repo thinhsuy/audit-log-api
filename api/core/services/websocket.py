@@ -1,6 +1,5 @@
 from fastapi import WebSocket
 from broadcaster import Broadcast as LibBroadcast
-from core.services.base import AppService
 from typing import List, Dict, Tuple
 import asyncio
 import json

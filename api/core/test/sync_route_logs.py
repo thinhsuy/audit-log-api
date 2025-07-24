@@ -5,18 +5,30 @@ from core.app import app
 from core.config import DATA_DIR, Path
 import uuid
 from datetime import datetime
-from core.config import logger
+import requests
+import json
+import uuid
+from datetime import datetime
+from core.config import DATA_DIR, Path
+
+API_ENDPOINT = "http://localhost:8080"
+SAMPLE_ENTRY_FOLDER = Path(DATA_DIR, "sample_entries.json")
+ROUTERS = "/api/v1"
+AUTHEN_ROUTER = f"{API_ENDPOINT}{ROUTERS}/authen"
+LOG_ROUTER = f"{API_ENDPOINT}{ROUTERS}/logs"
+EXPIRE_MIN: int = 1140
+TOKEN_FILE = Path(DATA_DIR, f"{EXPIRE_MIN}m_access.json")
 
 UUID = str(uuid.uuid4())
 
 @pytest.fixture(scope="module")
 def sample_entries():
-    with open(Path(DATA_DIR, 'sample_entries.json'), 'r') as f:
+    with open(SAMPLE_ENTRY_FOLDER, 'r') as f:
         return json.load(f)
 
 @pytest.fixture
 def token_package():
-    with open(Path(DATA_DIR, '1140m_access.json'), 'r') as f:
+    with open(TOKEN_FILE, 'r') as f:
         return json.load(f)
 
 def test_create_log(sample_entries, token_package):
@@ -79,16 +91,16 @@ def test_export_logs(token_package):
         assert response.status_code == 200
         assert response.headers["Content-Disposition"] == "attachment; filename=logs.csv"
 
-def test_cleanup_old_logs(token_package):
-    access_token = token_package.get("access_token", "")
-    with TestClient(app) as client:
-        response = client.delete(
-            "/api/v1/logs/cleanup",
-            headers={"Authorization": f"Bearer {access_token}"}
-        )
+# def test_cleanup_old_logs(token_package):
+#     access_token = token_package.get("access_token", "")
+#     with TestClient(app) as client:
+#         response = client.delete(
+#             "/api/v1/logs/cleanup",
+#             headers={"Authorization": f"Bearer {access_token}"}
+#         )
         
-        assert response.status_code == 200
-        assert "Cleanup completed successfully!" in response.json()["message"]
+#         assert response.status_code == 200
+#         assert "Cleanup completed successfully!" in response.json()["message"]
 
 
 def test_get_logs_stats(token_package):

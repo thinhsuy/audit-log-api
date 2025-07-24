@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from core.schemas.v1.enum import UserRoleEnum
 
 class CreateAccessTokenPayload(BaseModel):
     username: str
@@ -17,7 +18,7 @@ class RefreshTokenPayload(BaseModel):
 class CreateAccountPayload(BaseModel):
     tenant_name: str
     username: str
-    role: str = None
+    role: UserRoleEnum = None
     email: Optional[str] = None
 
 class TenantUserCreateResponse(BaseModel):

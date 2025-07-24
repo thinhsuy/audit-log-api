@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from core.schemas.payloads.logs import *
 from core.services.authentication import AuthenService
 from core.config import logger
@@ -11,8 +11,8 @@ from core.database.CRUD import PGCreation, PGRetrieve, PGDeletion
 import csv
 from typing import List
 import tempfile
-import asyncio
 from fastapi.responses import FileResponse
+from core.services import Audit_SQS
 
 router = APIRouter()
 
@@ -25,6 +25,7 @@ TokenDependencies = Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer()
 )
 async def get_log(
     payload: CreateLogPayload,
+    background_tasks: BackgroundTasks,
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
@@ -33,13 +34,23 @@ async def get_log(
         if not token_data:
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
 
-        status = await PGCreation(db).create_new_log(
+        log = await PGCreation(db).create_new_log(
             log=payload,
             tenant_id=token_data.get("tenant_id", None),
             user_id=token_data.get("user_id", None)
         )
-        if not status:
+        if not log:
             return LogEntryCreateResponse(message="Failed to create log!")
+        
+        background_tasks.add_task(
+            Audit_SQS.send_message,
+            {
+                "type": "logs.created",
+                "tenant_id": token_data.get("tenant_id", None),
+                **log.model_dump()
+            }
+        )
+
         return LogEntryCreateResponse(
             message="Create Log Successfully!",
             log=payload.model_dump()
@@ -57,6 +68,8 @@ async def get_log(
 )
 async def get_logs(
     token: TokenDependencies,
+    skip: int = Query(None, ge=0, description="Number of records to skip"),
+    limit: int = Query(None, ge=1, le=1000, description="Max records to return"),
     db: AsyncSession = Depends(async_get_db)
 ):
     try:
@@ -65,7 +78,8 @@ async def get_logs(
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
 
         logs = await PGRetrieve(db).retrieve_logs(
-            tenant_id=token_data.get("tenant_id", None)
+            tenant_id=token_data.get("tenant_id", None),
+            skip=skip, limit=limit
         )
 
         if not logs:
@@ -78,7 +92,7 @@ async def get_logs(
     except Exception:
         message = "Failed to get logs!"
         logger.error(f"{message}: {traceback.format_exc()}")
-        return GetLogsResponse(message=message)
+        raise HTTPException(status_code=500, detail=message)
 
 @router.get(
     "/export",
@@ -109,7 +123,7 @@ async def export_logs(
         
     except Exception as e:
         message = f"Failed to export logs: {str(e)}"
-        logger.error(message)
+        logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
 
 @router.post(
@@ -119,6 +133,7 @@ async def export_logs(
 )
 async def bulk_create_logs(
     payload: List[CreateLogPayload],
+    background_tasks: BackgroundTasks,
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db)
 ):
@@ -138,6 +153,17 @@ async def bulk_create_logs(
         if not logs:
             raise HTTPException(status_code=500, detail="Failed to create bulk logs")
 
+        background_tasks.add_task(
+            Audit_SQS.send_message,
+            {
+                "type": "logs.created",
+                "tenant_id": token_data.get("tenant_id", None),
+                "logs": [
+                    log.model_dump()
+                    for log in logs
+                ]
+            }
+        )
         return BulkLogCreateResponse(
             message="Logs created successfully!",
             logs=[log.model_dump() for log in logs]
@@ -172,7 +198,7 @@ async def cleanup_old_logs(
     except Exception:
         message = "Failed to cleanup old logs!"
         logger.error(f"{message}: {traceback.format_exc()}")
-        return CleanupLogResponse(message=message)
+        raise HTTPException(status_code=500, detail=message)
 
 @router.get(
     "/stats",
@@ -190,7 +216,7 @@ async def get_logs_stats(
         
         tenant_id = token_data.get("tenant_id", None)
 
-        stats = await PGRetrieve(db).get_log_statistics(tenant_id)
+        stats = await PGRetrieve(db).get_logs_stats_by_tenant(tenant_id)
 
         return GetLogsStatsResponse(
             message="Log statistics retrieved successfully!",
@@ -199,12 +225,12 @@ async def get_logs_stats(
     except Exception:
         message = "Failed to get log statistics!"
         logger.error(f"{message}: {traceback.format_exc()}")
-        return GetLogsStatsResponse(message=message)
+        raise HTTPException(status_code=500, detail=message)
 
 @router.get(
     "/{id}",
     description="Search/filter logs (tenant-scoped)",
-    response_model=GetLogResponse
+    response_model=GetLogsResponse
 )
 async def get_logs(
     id: str,
@@ -216,19 +242,18 @@ async def get_logs(
         if not token_data:
             raise HTTPException(status_code=401, detail="Invalid or expired token.")
 
-        log = await PGRetrieve(db).retrieve_logs(
+        logs = await PGRetrieve(db).retrieve_logs(
             tenant_id=token_data.get("tenant_id", None),
             log_id=id,
-            is_get_one=True
         )
+        if not logs:
+            return GetLogsResponse(message="There is no logs available")
 
-        if not log:
-            return GetLogResponse(message=f"There is no log with id: {id}")
-
-        return GetLogResponse(
-            message="Retrieve log successfully!",
-            log=log
+        return GetLogsResponse(
+            message="Retrieve logs successfully!",
+            logs=logs
         )
-    except Exception as e:
-        logger.error(f"Failed to get logs by id: {traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail="Failed to get logs")
+    except Exception:
+        message = "Failed to get logs!"
+        logger.error(f"{message}: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=message)

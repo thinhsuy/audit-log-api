@@ -8,6 +8,9 @@ from core.schemas.v1.user import User, UserTable
 import asyncpg
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
+from core.services.security import SecurityService
+from typing import List
+from core.schemas.v1.chat import Conversation,ConverationTable
 
 class PGCreation:
     def __init__(self, db: AsyncSession):
@@ -54,19 +57,22 @@ class PGCreation:
         log: AuditLog,
         tenant_id: str,
         user_id: str,
-    ) -> AuditLogTable:
+    ) -> AuditLog:
         try:
             data = log.model_dump(exclude_none=True)
             data.update({
                 "tenant_id": tenant_id,
-                "user_id": user_id,
+                "user_id": user_id
             })
+            if data.get("meta_data"):
+                data.update({"meta_data": SecurityService().encrypt_field(data.get("meta_data"))})
+
             data.setdefault("timestamp", datetime.now(VIETNAM_TZ))
             entry = AuditLogTable(**data)
             self.db.add(entry)
             await self.db.commit()
             await self.db.refresh(entry)
-            return entry
+            return log
         
         except asyncpg.exceptions.InvalidTextRepresentationError as e:
             logger.error(f"Invalid enum value error when creating log: {traceback.format_exc()}")
@@ -143,4 +149,36 @@ class PGCreation:
 
         except Exception as e:
             logger.error(f"Error when creating log: {traceback.format_exc()}")
+            return None
+
+    async def create_bulk_conversations(
+        self,
+        tenant_id: str,
+        conversations: List[Conversation]
+    ) -> List[Conversation]:
+        try:
+            entries = []
+            for convers in conversations:
+                data = convers.model_dump(exclude_none=True)
+                data.update({"tenant_id": tenant_id})
+                entries.append(ConverationTable(**data))
+
+            self.db.add_all(entries)
+            await self.db.commit()
+
+            for entry in entries:
+                await self.db.refresh(entry)
+
+            return conversations
+
+        except asyncpg.exceptions.InvalidTextRepresentationError as e:
+            logger.error(f"Invalid enum value error when creating bulk conversations: {traceback.format_exc()}")
+            return None
+
+        except SQLAlchemyError as e:
+            logger.error(f"Database error when creating bulk conversations: {traceback.format_exc()}")
+            return None
+
+        except Exception as e:
+            logger.error(f"Error when creating bulk conversations: {traceback.format_exc()}")
             return None

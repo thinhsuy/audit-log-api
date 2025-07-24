@@ -9,7 +9,7 @@ readme = "README.md"
 packages = [{include = "core"}]
 
 [tool.poetry.dependencies]
-python = "^3.10.0"
+python = ">=3.10,<3.12"
 fastapi = "^0.116.1"
 uvicorn = {extras = ["standard"], version = "^0.30.6"}
 pydantic = "2.5.3"
@@ -29,6 +29,12 @@ pytest = "^8.4.1"
 starlette = "^0.47.2"
 pytest-asyncio = "^1.1.0"
 asgi-lifespan = "^2.1.0"
+boto3 = "^1.39.9"
+numpy = "^1.25.0"
+requests = "^2.32.4"
+openai = "^1.97.1"
+pandasai = ">=3.0.0b4,<4.0.0"
+pandasai-openai = "^0.1.6"
 
 [build-system]
 requires = ["poetry-core"]
