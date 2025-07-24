@@ -8,13 +8,14 @@ from core.config import (
     ERROR_THRESHOLD,
     WARNING_THRESHOLD,
     CRITICAL_THRESHOLD,
-    VIETNAM_TZ
+    VIETNAM_TZ,
 )
 from core.schemas.v1.enum import SeverityEnum
 from datetime import datetime
 from core.services import Audit_SQS
 from core.config import logger
 import traceback
+
 
 class Worker(ABC):
     def __init__(self, db: AsyncSession, **kwargs):
@@ -23,28 +24,34 @@ class Worker(ABC):
     @abstractmethod
     async def process(self, payload: dict) -> None:
         """Process payload"""
-        raise NotImplementedError("Subclasses must implement process() method")
+        raise NotImplementedError(
+            "Subclasses must implement process() method"
+        )
+
 
 class StatsWorker(Worker):
-    def __init__(self, db: AsyncSession, alert_thresholds: dict = None):
+    def __init__(
+        self, db: AsyncSession, alert_thresholds: dict = None
+    ):
         super().__init__(db)
         self.thresholds = alert_thresholds or {
             SeverityEnum.ERROR: ERROR_THRESHOLD,
             SeverityEnum.CRITICAL: CRITICAL_THRESHOLD,
             SeverityEnum.WARNING: WARNING_THRESHOLD,
         }
-    
+
     async def process(self, payload):
         try:
             tenant_id = payload.get("tenant_id", None)
             if not tenant_id:
                 return
-            
-            logger.info("[WORKER][STATS] Calculate stats for message:", payload)
+
+            logger.info(
+                "[WORKER][STATS] Calculate stats for message:", payload
+            )
 
             logs_stat = await PGRetrieve(self.db).get_logs_stats_alert(
-                tenant_id=tenant_id,
-                time_retention=24
+                tenant_id=tenant_id, time_retention=24
             )
 
             for level, count in logs_stat.stats.items():
@@ -55,15 +62,20 @@ class StatsWorker(Worker):
                         "tenant_id": tenant_id,
                         "severity": level,
                         "count": count,
-                        "timestamp": datetime.now(VIETNAM_TZ).isoformat()
+                        "timestamp": datetime.now(
+                            VIETNAM_TZ
+                        ).isoformat(),
                     }
                     try:
                         Audit_SQS.send_message(alert_payload)
-                        logger.warning(f"[WORKER][STAT][ALERT] {level} count {count} > threshold {threshold}")
+                        logger.warning(
+                            f"[WORKER][STAT][ALERT] {level} count {count} > threshold {threshold}"
+                        )
                     except Exception as e:
                         logger.error(f"[WORKER][STAT][ERROR] {e}")
         except Exception as e:
             print(f"[WORKER][STAT][ERROR] {e}")
+
 
 class BackgroundWorkers:
     def __init__(self, sessionmaker: async_sessionmaker[AsyncSession]):
@@ -80,7 +92,7 @@ class BackgroundWorkers:
                     Audit_SQS.receive_messages,
                     self.sqs_max_mess,
                     self.sqs_wait_sec,
-                    self.sqs_visi_timeout
+                    self.sqs_visi_timeout,
                 )
 
                 if not msgs:
@@ -93,16 +105,22 @@ class BackgroundWorkers:
                             body = json.loads(msg["Body"])
                             evt_type = body.get("type")
                             if evt_type == "logs.created":
-                                await StatsWorker(db=session).process(body)
-                            
+                                await StatsWorker(db=session).process(
+                                    body
+                                )
+
                             Audit_SQS.delete_message(
                                 msg["ReceiptHandle"]
                             )
                         except Exception as e:
-                            logger.error(f"[WORKER][MSG ERROR] {e}\n{traceback.format_exc()}")
+                            logger.error(
+                                f"[WORKER][MSG ERROR] {e}\n{traceback.format_exc()}"
+                            )
 
                 await asyncio.sleep(self.poll_interval)
 
             except Exception as e:
-                logger.error(f"[WORKER][LOOP ERROR] {e}\n{traceback.format_exc()}")
+                logger.error(
+                    f"[WORKER][LOOP ERROR] {e}\n{traceback.format_exc()}"
+                )
                 await asyncio.sleep(self.poll_interval)

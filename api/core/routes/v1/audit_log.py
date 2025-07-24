@@ -1,4 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    Request,
+    HTTPException,
+    BackgroundTasks,
+    Query,
+)
 from core.schemas.payloads.logs import *
 from core.services.authentication import AuthenService
 from core.config import logger
@@ -13,246 +20,320 @@ from typing import List
 import tempfile
 from fastapi.responses import FileResponse
 from core.services import Audit_SQS
+from core.limiter import RATE_LIMITER
 
 router = APIRouter()
+Limiter = RATE_LIMITER.get_limiter()
 
-TokenDependencies = Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer())]
+TokenDependencies = Annotated[
+    HTTPAuthorizationCredentials, Depends(HTTPBearer())
+]
+
 
 @router.post(
     "/",
     description="Create log entry (with tenant ID)",
-    response_model=LogEntryCreateResponse
+    response_model=LogEntryCreateResponse,
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def get_log(
     payload: CreateLogPayload,
     background_tasks: BackgroundTasks,
+    request: Request,
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
 
         log = await PGCreation(db).create_new_log(
             log=payload,
             tenant_id=token_data.get("tenant_id", None),
-            user_id=token_data.get("user_id", None)
+            user_id=token_data.get("user_id", None),
         )
         if not log:
-            return LogEntryCreateResponse(message="Failed to create log!")
-        
+            return LogEntryCreateResponse(
+                message="Failed to create log!"
+            )
+
         background_tasks.add_task(
             Audit_SQS.send_message,
             {
                 "type": "logs.created",
                 "tenant_id": token_data.get("tenant_id", None),
-                **log.model_dump()
-            }
+                **log.model_dump(),
+            },
         )
 
         return LogEntryCreateResponse(
             message="Create Log Successfully!",
-            log=payload.model_dump()
+            log=payload.model_dump(),
         )
+    except HTTPException:
+        raise
     except Exception:
         message = "Failed to create log!"
         logger.error(f"{message}: {traceback.format_exc()}")
         return LogEntryCreateResponse(message=message)
-    
+
 
 @router.get(
     "/",
     description="Search/filter logs (tenant-scoped)",
-    response_model=GetLogsResponse
+    response_model=GetLogsResponse,
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def get_logs(
     token: TokenDependencies,
-    skip: int = Query(None, ge=0, description="Number of records to skip"),
-    limit: int = Query(None, ge=1, le=1000, description="Max records to return"),
-    db: AsyncSession = Depends(async_get_db)
+    request: Request,
+    skip: int = Query(
+        None, ge=0, description="Number of records to skip"
+    ),
+    limit: int = Query(
+        None, ge=1, le=1000, description="Max records to return"
+    ),
+    db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
 
         logs = await PGRetrieve(db).retrieve_logs(
             tenant_id=token_data.get("tenant_id", None),
-            skip=skip, limit=limit
+            skip=skip,
+            limit=limit,
         )
 
         if not logs:
-            return GetLogsResponse(message="There is no logs available")
+            return GetLogsResponse(
+                message="There is no logs available"
+            )
 
         return GetLogsResponse(
-            message="Retrieve logs successfully!",
-            logs=logs
+            message="Retrieve logs successfully!", logs=logs
         )
+    except HTTPException:
+        raise
     except Exception:
         message = "Failed to get logs!"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
 
+
 @router.get(
     "/export",
     description="Export logs (tenant-scoped)",
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def export_logs(
     token: TokenDependencies,
-    db: AsyncSession = Depends(async_get_db)
+    request: Request,
+    db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
 
         tenant_id = token_data.get("tenant_id")
         logs = await PGRetrieve(db).retrieve_logs(tenant_id=tenant_id)
 
         if not logs:
-            raise HTTPException(status_code=404, detail="No logs found for export")
+            raise HTTPException(
+                status_code=404, detail="No logs found for export"
+            )
 
-        with tempfile.NamedTemporaryFile(delete=False, mode='w', newline='', dir='/tmp', suffix='.csv') as tmpfile:
+        with tempfile.NamedTemporaryFile(
+            delete=False,
+            mode="w",
+            newline="",
+            dir="/tmp",
+            suffix=".csv",
+        ) as tmpfile:
             writer = csv.writer(tmpfile)
             writer.writerow(list(logs[0].model_dump().keys()))
             for log in logs:
                 writer.writerow(log.model_dump().values())
             tmpfile.close()
-            return FileResponse(tmpfile.name, filename="logs.csv", media_type="text/csv", headers={"Content-Disposition": "attachment; filename=logs.csv"})
-        
+            return FileResponse(
+                tmpfile.name,
+                filename="logs.csv",
+                media_type="text/csv",
+                headers={
+                    "Content-Disposition": "attachment; filename=logs.csv"
+                },
+            )
+
+    except HTTPException:
+        raise
     except Exception as e:
         message = f"Failed to export logs: {str(e)}"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
 
+
 @router.post(
     "/bulk",
     description="Bulk log creation (with tenant ID)",
-    response_model=BulkLogCreateResponse
+    response_model=BulkLogCreateResponse,
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def bulk_create_logs(
     payload: List[CreateLogPayload],
     background_tasks: BackgroundTasks,
+    request: Request,
     token: TokenDependencies,
-    db: AsyncSession = Depends(async_get_db)
+    db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
-        
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
+
         tenant_id = token_data.get("tenant_id", None)
         user_id = token_data.get("user_id", None)
 
         logs: List[AuditLog] = await PGCreation(db).create_bulk_logs(
-            logs=payload,
-            tenant_id=tenant_id,
-            user_id=user_id
+            logs=payload, tenant_id=tenant_id, user_id=user_id
         )
         if not logs:
-            raise HTTPException(status_code=500, detail="Failed to create bulk logs")
+            raise HTTPException(
+                status_code=500, detail="Failed to create bulk logs"
+            )
 
         background_tasks.add_task(
             Audit_SQS.send_message,
             {
                 "type": "logs.created",
                 "tenant_id": token_data.get("tenant_id", None),
-                "logs": [
-                    log.model_dump()
-                    for log in logs
-                ]
-            }
+                "logs": [log.model_dump() for log in logs],
+            },
         )
         return BulkLogCreateResponse(
             message="Logs created successfully!",
-            logs=[log.model_dump() for log in logs]
+            logs=[log.model_dump() for log in logs],
         )
+    except HTTPException:
+        raise
     except Exception:
         message = "Failed to create logs!"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
 
+
 @router.delete(
     "/cleanup",
     description="Cleanup old logs (tenant-scoped)",
-    response_model=CleanupLogResponse
+    response_model=CleanupLogResponse,
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def cleanup_old_logs(
     token: TokenDependencies,
-    retention_days: int = 90,
+    request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
-        
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
+
         tenant_id = token_data.get("tenant_id", None)
-        deleted_count = await PGDeletion(db).cleanup_old_logs(tenant_id)
+        deleted_count = await PGDeletion(db).cleanup_old_logs(
+            tenant_id
+        )
 
         return CleanupLogResponse(
             message=f"Cleanup completed successfully! {deleted_count} logs deleted.",
-            deleted_count=deleted_count
+            deleted_count=deleted_count,
         )
     except Exception:
         message = "Failed to cleanup old logs!"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
 
+
 @router.get(
     "/stats",
     description="Get log statistics (tenant-scoped)",
-    response_model=GetLogsStatsResponse
+    response_model=GetLogsStatsResponse,
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def get_logs_stats(
     token: TokenDependencies,
-    db: AsyncSession = Depends(async_get_db)
+    request: Request,
+    db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
-        
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
+
         tenant_id = token_data.get("tenant_id", None)
 
-        stats = await PGRetrieve(db).get_logs_stats_by_tenant(tenant_id)
+        stats = await PGRetrieve(db).get_logs_stats_by_tenant(
+            tenant_id
+        )
 
         return GetLogsStatsResponse(
             message="Log statistics retrieved successfully!",
-            response=stats
+            response=stats,
         )
+    except HTTPException:
+        raise
     except Exception:
         message = "Failed to get log statistics!"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
 
+
 @router.get(
     "/{id}",
     description="Search/filter logs (tenant-scoped)",
-    response_model=GetLogsResponse
+    response_model=GetLogsResponse,
 )
+@Limiter.limit(RATE_LIMITER.default_limit)
 async def get_logs(
     id: str,
     token: TokenDependencies,
-    db: AsyncSession = Depends(async_get_db)
+    request: Request,
+    db: AsyncSession = Depends(async_get_db),
 ):
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
-            raise HTTPException(status_code=401, detail="Invalid or expired token.")
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired token."
+            )
 
         logs = await PGRetrieve(db).retrieve_logs(
             tenant_id=token_data.get("tenant_id", None),
             log_id=id,
         )
         if not logs:
-            return GetLogsResponse(message="There is no logs available")
+            return GetLogsResponse(
+                message="There is no logs available"
+            )
 
         return GetLogsResponse(
-            message="Retrieve logs successfully!",
-            logs=logs
+            message="Retrieve logs successfully!", logs=logs
         )
+    except HTTPException:
+        raise
     except Exception:
         message = "Failed to get logs!"
         logger.error(f"{message}: {traceback.format_exc()}")

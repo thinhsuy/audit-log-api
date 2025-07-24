@@ -9,7 +9,10 @@ from sqlalchemy import (
     Text,
     JSON,
     ForeignKey,
-    Index
+    Index,
+    DDL,
+    event,
+    PrimaryKeyConstraint,
 )
 import uuid
 from sqlalchemy.sql import func
@@ -17,16 +20,18 @@ from core.schemas.v1.enum import (
     severity_enum,
     action_type_enum,
     SeverityEnum,
-    ActionTypeEnum
+    ActionTypeEnum,
 )
 from core.schemas.base import BaseObject
+
 
 class LogStats(BaseModel):
     stats: Optional[Dict[str, int]] = {}
 
+
 class AuditLog(BaseObject):
     """Base object of AuditLog"""
-    id: Optional[str] = str(uuid.uuid4())
+
     session_id: Optional[str] = None
     action_type: ActionTypeEnum
     resource_type: str
@@ -39,6 +44,7 @@ class AuditLog(BaseObject):
     meta_data: Optional[Dict[str, Any]] = None
     timestamp: Optional[datetime] = None
 
+
 class AuditLogTable(Base):
     """This is the table for loging information of logs.
     This table also need to be indexed in several composition index for faster searching.
@@ -46,13 +52,18 @@ class AuditLogTable(Base):
 
     __tablename__ = "audit_logs"
     __table_args__ = (
-        # PrimaryKeyConstraint('id', 'timestamp', name='pk_audit_logs'),
+        PrimaryKeyConstraint("tenant_id", "id", name="pk_audit_logs"),
         Index("ix_audit_logs_tenant_log", "tenant_id", "id"),
         Index("ix_audit_logs_tenant", "tenant_id"),
-        Index("idx_audit_logs_tenant_sev_ts", "tenant_id", "severity", "timestamp"),
-
+        Index(
+            "idx_audit_logs_tenant_sev_ts",
+            "tenant_id",
+            "severity",
+            "timestamp",
+        ),
         # Need to consider again for this partition
         # {"postgresql_partition_by": "RANGE (timestamp)"}
+        {"postgresql_partition_by": "LIST (tenant_id)"},
     )
 
     id = Column(
@@ -80,10 +91,14 @@ class AuditLogTable(Base):
         index=True,
     )
 
-    action_type = Column(action_type_enum, nullable=False, default=ActionTypeEnum.VIEW)
+    action_type = Column(
+        action_type_enum, nullable=False, default=ActionTypeEnum.VIEW
+    )
     resource_type = Column(String, nullable=False)
     resource_id = Column(String, nullable=True)
-    severity = Column(severity_enum, nullable=False, default=SeverityEnum.INFO)
+    severity = Column(
+        severity_enum, nullable=False, default=SeverityEnum.INFO
+    )
     ip_address = Column(String, nullable=True)
     user_agent = Column(Text, nullable=True)
     before_state = Column(JSON, nullable=True)
@@ -94,3 +109,16 @@ class AuditLogTable(Base):
         server_default=func.now(),
         nullable=False,
     )
+
+
+event.listen(
+    AuditLogTable.__table__,
+    "after_create",
+    DDL(
+        """
+        -- partition DEFAULT in case not match any tenant_id
+        CREATE TABLE IF NOT EXISTS audit_logs_default
+        PARTITION OF audit_logs DEFAULT;
+    """
+    ),
+)

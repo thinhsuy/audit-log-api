@@ -3,6 +3,7 @@ from core.database.trigger import PGTrigger
 from sqlalchemy.ext.asyncio import AsyncEngine
 from core.config import logger
 
+
 async def init_db(engine: AsyncEngine):
     """Establish database along with setups information around"""
     async with engine.begin() as conn:

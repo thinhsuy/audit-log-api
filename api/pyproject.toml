@@ -33,8 +33,8 @@ boto3 = "^1.39.9"
 numpy = "^1.25.0"
 requests = "^2.32.4"
 openai = "^1.97.1"
-pandasai = ">=3.0.0b4,<4.0.0"
-pandasai-openai = "^0.1.6"
+slowapi = "^0.1.9"
+pandasai = "^2.3.0"
 
 [build-system]
 requires = ["poetry-core"]

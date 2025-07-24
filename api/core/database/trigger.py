@@ -8,19 +8,22 @@ from core.config import logger
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 import traceback
 
+
 class PGTrigger:
-    def __init__(self, conn: AsyncConnection = None, db: AsyncSession = None):
+    def __init__(
+        self, conn: AsyncConnection = None, db: AsyncSession = None
+    ):
         self.conn: AsyncConnection = conn
         self.db: AsyncSession = db
 
     async def create_masking_triggers(self):
         """
-            Create triggers for masking data to UserTable,
-            After insert into UserTable, it need to mask data and then
-            store the original data into authorized table to trackback.
+        Create triggers for masking data to UserTable,
+        After insert into UserTable, it need to mask data and then
+        store the original data into authorized table to trackback.
 
-            First, insert raw data into MaskedUserTable.
-            Then, mask the email and insert into UserTable.
+        First, insert raw data into MaskedUserTable.
+        Then, mask the email and insert into UserTable.
         """
         try:
             if not self.conn:
@@ -36,23 +39,20 @@ class PGTrigger:
             trigger_function = """
             CREATE OR REPLACE FUNCTION mask_and_store_email()
             RETURNS TRIGGER AS $$
-            BEGIN
-                NEW.email := CONCAT(SUBSTRING(NEW.email FROM 1 FOR 1), '****', SUBSTRING(NEW.email FROM POSITION('@' IN NEW.email) FOR LENGTH(NEW.email) - POSITION('@' IN NEW.email) + 1));
-                -- Step 1: Insert raw data (unmasked) into masked_user table
+            BEGIN  
                 INSERT INTO masked_user (user_id, masked_email, created_at)
                 VALUES (
-                    NEW.id,  -- user_id for the user
+                    NEW.id,
                     NEW.email,
-                    CURRENT_TIMESTAMP -- created_at timestamp
+                    CURRENT_TIMESTAMP
                 );
 
+                NEW.email := CONCAT(SUBSTRING(NEW.email FROM 1 FOR 1), '****', SUBSTRING(NEW.email FROM POSITION('@' IN NEW.email) FOR LENGTH(NEW.email) - POSITION('@' IN NEW.email) + 1));
                 RETURN NEW;
             END;
             $$ LANGUAGE plpgsql;
-
             """
 
-            # Create the trigger to execute after insert on users
             trigger_query = """
             CREATE TRIGGER trigger_mask_and_store_email
             BEFORE INSERT ON users
@@ -60,11 +60,11 @@ class PGTrigger:
             EXECUTE FUNCTION mask_and_store_email();
             """
 
-            # Execute the function and the trigger creation query
             await self.conn.execute(text(trigger_function))
             await self.conn.execute(text(trigger_query))
 
         except Exception:
-            logger.error(f"Failed to create trigger: {traceback.format_exc()}")
+            logger.error(
+                f"Failed to create trigger: {traceback.format_exc()}"
+            )
             raise Exception("Failed to create trigger")
-

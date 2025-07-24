@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "audit-log-ui"
+version = "0.0.1"
+description = ""
+authors = [
+    "thinhsuyluy <ndthinh0201@gmail.com>"
+]
+readme = "README.md"
+packages = [{include = "core"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+streamlit = "^1.47.0"
+streamlit-autorefresh = "^1.0.1"
+requests = "^2.32.4"
+websocket = "^0.2.1"
+pyarrow = "^21.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -2,11 +2,13 @@ from pydantic import BaseModel
 from typing import List
 from core.schemas.v1.chat import Conversation
 
+
 class ToolCallFormat(BaseModel):
     tool_call_id: str
     role: str
     function_name: str
     content: str
+
 
 class ToolResponseFormat(BaseModel):
     content: str
@@ -17,6 +19,7 @@ class ToolResponseFormat(BaseModel):
             return self.kwargs.get(key)
         return None
 
+
 class ToolAdditionalParams:
     def __init__(self, args: dict) -> None:
         self.args = args
@@ -25,6 +28,7 @@ class ToolAdditionalParams:
         if self.args.get(key):
             return self.args.get(key)
         return None
+
 
 class AgentResponseFormat(BaseModel):
     content: str
