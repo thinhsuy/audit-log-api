@@ -9,13 +9,19 @@ To enable administrators to query audit logs seamlessly across any platform, I b
 ---
 ## Demo Deployment
 - The APIs document (Swagger) is deployed at [here](https://travist-audit-log-api.orangecoast-1a9ad26f.southeastasia.azurecontainerapps.io/docs)
-- The Streamlit Dashboard is deployed at [here]()
+- [WIP] The Streamlit Dashboard is deployed at [here]()
 
+---
+## API usage instruction
+To use the core APIs listed below, you must first obtain a valid access token. Access tokens are time-limited and automatically expire when their validity period ends.
+To generate an access token, you’ll need to create a user account associated with a specific tenant.
+Currently, I have three sample tenants available: Resola, KMS, and AIAIVN. After creating a user under one of these tenants, request an access token using that user’s credentials.
+Finally, include the newly issued token in your requests to authorize and interact with the APIs.
 ---
 ## How to set up
 - Please config the `.env` with given sample keys in `sample.env` to run this repo.
 ```bash
-# (optional) instal virtual envs, we require version of python
+# (optional) instal virtual envs, it require version of python
 conda create --name yourenv python==3.11
 conda actiate yourenv
 
