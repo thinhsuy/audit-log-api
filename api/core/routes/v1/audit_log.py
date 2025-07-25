@@ -37,7 +37,7 @@ TokenDependencies = Annotated[
     response_model=LogEntryCreateResponse,
 )
 @Limiter.limit(RATE_LIMITER.default_limit)
-async def get_log(
+async def create_log_entry(
     payload: CreateLogPayload,
     background_tasks: BackgroundTasks,
     request: Request,
@@ -125,9 +125,14 @@ async def get_logs(
             raise HTTPException(
                 status_code=401, detail="Invalid or expired token."
             )
+        
+        tenant_id = token_data.get("tenant_id", None)
+        if not tenant_id:
+            raise HTTPException(status_code=401, detail="Tenant id is invalid")
+
 
         logs = await PGRetrieve(db).retrieve_logs(
-            tenant_id=token_data.get("tenant_id", None),
+            tenant_id=tenant_id,
             skip=skip,
             limit=limit,
         )
@@ -174,6 +179,9 @@ async def export_logs(
 
         tenant_id = token_data.get("tenant_id")
         logs = await PGRetrieve(db).retrieve_logs(tenant_id=tenant_id)
+        
+        if not tenant_id:
+            raise HTTPException(status_code=401, detail="Tenant id is invalid")
 
         if not logs:
             raise HTTPException(
