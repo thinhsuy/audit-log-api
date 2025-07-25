@@ -1,16 +1,11 @@
 from core.schemas import Base
-from sqlalchemy import (
-    Column,
-    DateTime,
-    ForeignKey,
-    Index,
-    String
-)
+from sqlalchemy import Column, DateTime, ForeignKey, Index, String
 import uuid
 from sqlalchemy.sql import func
 from core.schemas.base import BaseObject
 from typing import Optional
 from datetime import datetime
+
 
 class Session(BaseObject):
     tenant_id: str
@@ -19,12 +14,13 @@ class Session(BaseObject):
     started_at: Optional[datetime] = None
     ended_at: Optional[datetime] = None
 
+
 class SessionTable(Base):
     """
     Session table to store information of login session of user + tenant,
         which also need to be indexed for faster search.
     """
-    
+
     __tablename__ = "sessions"
     __table_args__ = (
         Index("ix_sessions_tenant_user", "tenant_id", "user_id"),
@@ -48,10 +44,7 @@ class SessionTable(Base):
         nullable=False,
         index=True,
     )
-    access_token = Column(
-        String,
-        nullable=False
-    )
+    access_token = Column(String, nullable=False)
     started_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),

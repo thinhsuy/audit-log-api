@@ -1,18 +1,17 @@
 from core.schemas.base import Base, BaseObject
-from sqlalchemy import (
-    Column,
-    String,
-    DateTime
-)
+from sqlalchemy import Column, String, DateTime
 import uuid
 from sqlalchemy.sql import func
 from typing import Optional
 
+
 class Tenant(BaseObject):
     name: Optional[str] = None
 
+
 class TenantTable(Base):
     """Tenant table to store information of tenants"""
+
     __tablename__ = "tenants"
 
     id = Column(

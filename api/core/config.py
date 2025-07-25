@@ -6,6 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from rich.logging import RichHandler
 from zoneinfo import ZoneInfo
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).parent.parent.absolute()
@@ -20,6 +21,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 WARNING_THRESHOLD = 50
 ERROR_THRESHOLD = 30
 CRITICAL_THRESHOLD = 10
+RATE_LIMIT_DEFAULT = "10000/minute"
 VIETNAM_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
 
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
@@ -39,11 +41,18 @@ AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_REGION = os.environ.get("AWS_REGION")
 AUDIT_QUEUE_URL = os.environ.get("SQS_QUEUE_URL")
 
-AZURE_OPENAI_EMB_DEPLOYMENT = os.environ.get("AZURE_OPENAI_EMB_DEPLOYMENT")
-AZURE_OPENAI_DEPLOYMENT_NAME = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME")
+AZURE_OPENAI_EMB_DEPLOYMENT = os.environ.get(
+    "AZURE_OPENAI_EMB_DEPLOYMENT"
+)
+AZURE_OPENAI_DEPLOYMENT_NAME = os.environ.get(
+    "AZURE_OPENAI_DEPLOYMENT_NAME"
+)
 AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
+
+ONE_WEEK_TOKEN = os.environ.get("ONE_WEEK_TOKEN")
+ONE_WEEK_SESSION = os.environ.get("ONE_WEEK_SESSION")
 
 logging_config = {
     "version": 1,

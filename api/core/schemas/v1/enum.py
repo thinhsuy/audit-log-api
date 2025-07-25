@@ -1,7 +1,8 @@
 from sqlalchemy import Enum as Pg_Enum
-from enum import Enum
+from enum import StrEnum
 
-class ActionTypeEnum(str, Enum):
+
+class ActionTypeEnum(StrEnum):
     CREATE = "CREATE"
     UPDATE = "UPDATE"
     DELETE = "DELETE"
@@ -9,17 +10,21 @@ class ActionTypeEnum(str, Enum):
     LOGIN = "LOGIN"
     LOGOUT = "LOGOUT"
 
-class SeverityEnum(str, Enum):
+
+class SeverityEnum(StrEnum):
     INFO = "INFO"
     WARNING = "WARNING"
     ERROR = "ERROR"
     CRITICAL = "CRITICAL"
 
-class UserRoleEnum(str, Enum):
-    ADMIN = "ADMIN"
-    CLIENT = "CLIENT"
 
-class LogStatsEnum(str, Enum):
+class UserRoleEnum(StrEnum):
+    ADMIN = "Admin"
+    CLIENT = "User"
+    AUDITOR = "Auditor"
+
+
+class LogStatsEnum(StrEnum):
     TOTOL_LOGS = "total_logs"
     INFO_LOGS = "info_logs"
     WARN_LOGS = "warning_logs"
@@ -30,33 +35,32 @@ class LogStatsEnum(str, Enum):
     DELETE_LOGS = "delete_logs"
     VIEW_LOGS = "view_logs"
 
-class ChatRoleEnum(str, Enum):
+
+class ChatRoleEnum(StrEnum):
     USER = "user"
     ASSISTANT = "assistant"
     SYSTEM = "system"
     TOOL = "tool"
 
+
 # ------------------------- PG_ENUM ------------------
 action_type_enum = Pg_Enum(
-    ActionTypeEnum.CREATE,
-    ActionTypeEnum.UPDATE,
-    ActionTypeEnum.DELETE,
-    ActionTypeEnum.VIEW,
-    ActionTypeEnum.LOGIN,
-    ActionTypeEnum.LOGOUT,
+    ActionTypeEnum,
     name="action_type_enum",
+    native_enum=True,
+    create_type=True,
 )
 
 severity_enum = Pg_Enum(
-    SeverityEnum.INFO,
-    SeverityEnum.WARNING,
-    SeverityEnum.ERROR,
-    SeverityEnum.CRITICAL,
+    SeverityEnum,
     name="severity_enum",
+    native_enum=True,
+    create_type=True,
 )
 
 user_role_enum = Pg_Enum(
-    UserRoleEnum.ADMIN,
-    UserRoleEnum.CLIENT,
+    UserRoleEnum,
     name="user_role_enum",
+    native_enum=True,
+    create_type=True,
 )

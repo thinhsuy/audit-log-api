@@ -28,9 +28,12 @@ class SimpleQueueService:
                 MessageBody=json.dumps(
                     payload,
                     # auto convert datetime to ios string
-                    default=lambda o: o.isoformat() if isinstance(o, datetime) else str(o)
+                    default=lambda o: (
+                        o.isoformat()
+                        if isinstance(o, datetime)
+                        else str(o)
+                    ),
                 ),
-                
             )
             msg_id = resp["MessageId"]
             logger.info(f"[SQS][SEND] Message: {payload}")
@@ -57,7 +60,9 @@ class SimpleQueueService:
                 logger.info("[RECEIVE][MESSAGE]: " + m["Body"])
             return msgs
         except ClientError as e:
-            logger.error("[RECEIVE][MESSAGE][ERROR][receive_messages]", e)
+            logger.error(
+                "[RECEIVE][MESSAGE][ERROR][receive_messages]", e
+            )
             raise
 
     def delete_message(self, receipt_handle: str):
@@ -65,7 +70,9 @@ class SimpleQueueService:
             self.sqs.delete_message(
                 QueueUrl=self.queue_url, ReceiptHandle=receipt_handle
             )
-            logger.info(f"[DELETE] Success for handle {receipt_handle[:10]}")
+            logger.info(
+                f"[DELETE] Success for handle {receipt_handle[:10]}"
+            )
         except ClientError as e:
             logger.error("[DELETE][MESSAGE][ERROR]", e)
             raise
