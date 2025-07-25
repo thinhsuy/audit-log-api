@@ -16,7 +16,7 @@ SAMPLE_ENTRY_FOLDER = Path(DATA_DIR, "sample_entries.json")
 ROUTERS = "/api/v1"
 AUTHEN_ROUTER = f"{API_ENDPOINT}{ROUTERS}/authen"
 LOG_ROUTER = f"{API_ENDPOINT}{ROUTERS}/logs"
-EXPIRE_MIN: int = 1140
+EXPIRE_MIN: int = 10080
 TOKEN_FILE = Path(DATA_DIR, f"{EXPIRE_MIN}m_access.json")
 ONE_WEEK_TOKEN = os.environ.get("ONE_WEEK_TOKEN")
 ONE_WEEK_SESSION = os.environ.get("ONE_WEEK_SESSION")
@@ -72,21 +72,6 @@ def test_get_logs(token_package):
         )
         assert isinstance(response_data["logs"], list)
 
-
-# def test_get_log_by_id(token_package):
-#     with TestClient(app) as client:
-#         log_id = UUID
-#         response = client.get(
-#             f"/api/v1/logs/{log_id}",
-#             headers={"Authorization": f"Bearer {ONE_WEEK_TOKEN}"}
-#         )
-
-#         assert response.status_code == 200
-#         response_data = response.json()
-#         assert response_data["message"] == "Retrieve log successfully!"
-#         assert response_data["log"]["id"] == log_id
-
-
 def test_export_logs(token_package):
     with TestClient(app) as client:
         response = client.get(
@@ -99,19 +84,6 @@ def test_export_logs(token_package):
             response.headers["Content-Disposition"]
             == "attachment; filename=logs.csv"
         )
-
-
-# def test_cleanup_old_logs(token_package):
-#     access_token = token_package.get("access_token", "")
-#     with TestClient(app) as client:
-#         response = client.delete(
-#             "/api/v1/logs/cleanup",
-#             headers={"Authorization": f"Bearer {access_token}"}
-#         )
-
-#         assert response.status_code == 200
-#         assert "Cleanup completed successfully!" in response.json()["message"]
-
 
 def test_get_logs_stats(token_package):
     with TestClient(app) as client:
@@ -126,3 +98,14 @@ def test_get_logs_stats(token_package):
             response_data["message"]
             == "Log statistics retrieved successfully!"
         )
+
+# def test_cleanup_old_logs(token_package):
+#     access_token = token_package.get("access_token", "")
+#     with TestClient(app) as client:
+#         response = client.delete(
+#             "/api/v1/logs/cleanup",
+#             headers={"Authorization": f"Bearer {access_token}"}
+#         )
+
+#         assert response.status_code == 200
+#         assert "Cleanup completed successfully!" in response.json()["message"]
