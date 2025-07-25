@@ -46,8 +46,10 @@ class PGRetrieve:
 
             if order_by_time:
                 query = query.order_by(AuditLogTable.timestamp.desc())
-            if skip and limit:
-                query = query.offset(skip).limit(limit)
+            if skip:
+                query = query.offset(skip)
+            if limit:
+                query = query.limit(limit)
 
             res = await self.db.execute(query)
             records = res.scalars().all()
