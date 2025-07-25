@@ -45,7 +45,6 @@ cd api/core && python main.py
 audit-logs/
 ├── .gitignore
 ├── docker-compose.yml        # Defines multi-container setup (API, Nginx, etc.)
-├── nginx.conf                # Nginx reverse-proxy and load-balancing config
 ├── api/
 │   ├── core/
 │   │   ├── agent/            # LLM / tool integrations
