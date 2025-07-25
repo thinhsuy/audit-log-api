@@ -4,8 +4,8 @@ from core.schemas.v1.enum import UserRoleEnum
 
 
 class CreateAccessTokenPayload(BaseModel):
-    user_id: str
-    tenant_id: str
+    user_name: str
+    tenant_name: str
     expired_miniutes: Optional[int] = None
 
 
