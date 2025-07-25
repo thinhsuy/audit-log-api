@@ -1,4 +1,4 @@
-{
+[{
     "action_type": "UPDATE",
     "resource_type": "order",
     "resource_id": "d138abde-c83d-4033-b30d-8ba8ab8d773b",
@@ -10,5 +10,5 @@
     "meta_data": {
         "bulk_generated": true
     },
-    "timestamp": "2025-07-25T10:06:21.870687+07:00Z"
-}
+    "timestamp": "2025-07-25T10:06:21.870687+07:00"
+}]
