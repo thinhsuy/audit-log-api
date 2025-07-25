@@ -101,13 +101,14 @@ async def generate_new_access_token(
 
         # prepare the token data based on tenant and user data
         tenant = await PGRetrieve(db).retrieve_tenant(
-            tenant_id=payload.tenant_id
+            tenant_name=payload.tenant_name
         )
         user = await PGRetrieve(db).retrieve_user(
-            user_id=payload.user_id
+            username=payload.user_name
         )
 
         if not user or not tenant:
+            print("This tenant or user is invalid!")
             raise HTTPException(
                 status_code=401,
                 detail="This tenant or user is invalid!",
@@ -153,5 +154,6 @@ async def generate_new_access_token(
         message = (
             f"Failed to generate token for user {payload.username}"
         )
+        print(message, traceback.format_exc())
         logger.error(f"{message}: {traceback.format_exc()}")
         return CreateAccessTokenResponse(message=message)
