@@ -26,6 +26,13 @@ async def list_out_tenants(
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Get the tenants information (based on Admin role only)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -66,6 +73,14 @@ async def create_tenant(
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Get the tenants information (based on Admin role only)
+
+    Args:
+        payload (CreateTenantPayload): information of new tenant need to create.
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:

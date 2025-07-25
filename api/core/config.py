@@ -51,6 +51,9 @@ AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 
+ONE_WEEK_TOKEN = os.environ.get("ONE_WEEK_TOKEN")
+ONE_WEEK_SESSION = os.environ.get("ONE_WEEK_SESSION")
+
 logging_config = {
     "version": 1,
     "disable_existing_loggers": False,

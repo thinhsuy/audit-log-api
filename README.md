@@ -154,6 +154,9 @@ To ensure a robust, secure, and highly scalable Audit Log API, I adopted the fol
 
 - **Fine-Grained Access Control**  
   Every request must present a JWT access token scoped to a single `tenant_id` and `user_id`. Tokens carry role claims (`Admin`, `User`, `Auditor`) and expire after a configurable TTL. FastAPI dependency injections validate token signatures which could decoded into roles, and tenant context on each route.
+  - `Admin`: have full access on every APIs
+  - `User`: have access on CRUD
+  - `Auditor`: have access on Read-Only
 
 - **Database-Level Data Masking**  
   PostgreSQL triggers automatically mask PII on INSERT/UPDATE into the `users` table. The original unmasked records are vaulted to a restricted `mask_users` table accessible only by audit-compliant processes. This ensures live queries never expose raw sensitive data.
@@ -193,45 +196,45 @@ To enable natural-language querying over audit data, I integrated an AI-driven A
 ### System Architecture
 ```mermaid
 flowchart TD
-    subgraph subGraph0["Audit Log Api"]
-        JWT["JWT Authentication"]
-        TA["Tenant Authenication"]
-        RATE["Rate Limiting"]
-    end
-    subgraph subGraph1["Core Serivces"]
-        LOGS["Logs service Multi-tenants"]
-        EXPORT["Export service Tenant-scoped"]
-        SEARCH["Search service Tenant-scoped"]
-        STREAM["Stream service Tenant-scoped"]
-    end
-    subgraph subGraph2["Data Layer"]
+  subgraph subGraph0["Audit Log Api"]
+    JWT["JWT Authentication"]
+    TA["Tenant Authenication"]
+    RATE["Rate Limiting"]
+  end
+  subgraph subGraph1["Core Serivces"]
+    LOGS["Logs service Multi-tenants"]
+    EXPORT["Export service Tenant-scoped"]
+    SEARCH["Search service Tenant-scoped"]
+    STREAM["Stream service Tenant-scoped"]
+  end
+  subgraph subGraph2["Data Layer"]
         POSTGRES[("AWS Lightsail Postgres")]
-    end
-    subgraph subGraph3["Message Queue"]
-        SQS[("AWS SQS Tenant-scoped")]
-    end
-    subgraph subGraph4["Background Service"]
-        STATS["Stats/Alert Worker"]
-        CLEAN["Data clean Worker"]
-    end
-    subgraph subGraph5["Agent Layer"]
-        MASTER["Master Agent"]
-        EXPERTISE["Expertise Agent"]
-        TOOLS["RAG Tools"]
-    end
-    Client["Client"] --> GATE["API Gateway"]
-    GATE --> JWT & UI["Dashboard Streamlit"]
-    JWT --> TA
-    TA --> RATE
-    RATE --> LOGS & EXPORT & SEARCH & STREAM & MASTER
-    LOGS --> POSTGRES & SQS
-    EXPORT --> POSTGRES
-    SEARCH --> POSTGRES
-    STATS --> SQS
-    CLEAN --> SQS
-    MASTER --> EXPERTISE
-    EXPERTISE --> MASTER & TOOLS
-    TOOLS --> POSTGRES
+  end
+  subgraph subGraph3["Message Queue"]
+    SQS[("AWS SQS Tenant-scoped")]
+  end
+  subgraph subGraph4["Background Service"]
+    STATS["Stats/Alert Worker"]
+    CLEAN["Data clean Worker"]
+  end
+  subgraph subGraph5["Agent Layer"]
+    MASTER["Master Agent"]
+    EXPERTISE["Expertise Agent"]
+    TOOLS["RAG Tools"]
+  end
+  UI["Dashboard Streamlit"] --> GATE["API Gateway"]
+  GATE --> JWT 
+  JWT --> TA
+  TA --> RATE
+  RATE --> LOGS & EXPORT & SEARCH & STREAM & MASTER
+  LOGS --> POSTGRES & SQS
+  EXPORT --> POSTGRES
+  SEARCH --> POSTGRES
+  STATS --> SQS
+  CLEAN --> SQS
+  MASTER --> EXPERTISE
+  EXPERTISE --> MASTER & TOOLS
+  TOOLS --> POSTGRES
 ```
 
 1. **JWT Authentication**  
@@ -241,7 +244,7 @@ flowchart TD
    Once the JWT is validated, a second check ensures that the token’s tenant context matches the target tenant (Tenant Authentication). The user’s role (`Admin`, `User`, or `Auditor`) is then enforced via FastAPI dependencies to gate access to each route.
 
 3. **Rate Limiting**  
-   Validated requests enter our rate-limiting middleware (`limiter.py`), which uses a Redis-backed token bucket algorithm to throttle.
+   Validated requests enter our rate-limiting middleware (`limiter.py`), which uses a dependency algorithm of `slowapi` to throttle.
 
 4. **Router Dispatch & Database Access**  
    Approved requests are dispatched to the appropriate FastAPI router. Each handler uses SQLAlchemy to query the AWS Lightsail PostgreSQL instance.

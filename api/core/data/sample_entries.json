@@ -1,21 +1,14 @@
 {
-    "id": "214202a0-6f11-4eb1-9f3b-2a8789df43b9",
-    "action_type": "CREATE",
-    "resource_type": "user",
-    "resource_id": "47fc255a-53c7-465d-997f-4b76b8b5a366",
-    "severity": "INFO",
-    "ip_address": "192.168.1.1",
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    "before_state": {
-        "name": "Lucky",
-        "email": "lukcy@gmail.com"
+    "action_type": "UPDATE",
+    "resource_type": "order",
+    "resource_id": "d138abde-c83d-4033-b30d-8ba8ab8d773b",
+    "severity": "WARNING",
+    "ip_address": "116.236.101.224",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "before_state": {},
+    "after_state": {},
+    "meta_data": {
+        "bulk_generated": true
     },
-    "after_state": {
-        "name": "Lucky",
-        "email": "lukcy@gmail.com"
-    },
-    "metadata": {
-        "note": "Email address updated"
-    },
-    "timestamp": "2025-07-19T09:43:09.319705"
+    "timestamp": "2025-07-25T10:06:21.870687+07:00Z"
 }

@@ -21,6 +21,7 @@ import tempfile
 from fastapi.responses import FileResponse
 from core.services import Audit_SQS
 from core.limiter import RATE_LIMITER
+from core.schemas.v1.enum import UserRoleEnum
 
 router = APIRouter()
 Limiter = RATE_LIMITER.get_limiter()
@@ -43,12 +44,23 @@ async def get_log(
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Generate a new log
+
+    Args:
+        background_tasks (BackgroundTasks): an async task to handle background task for this request.
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
             raise HTTPException(
                 status_code=401, detail="Invalid or expired token."
             )
+        
+        if token_data.get("role", "") == UserRoleEnum.AUDITOR:
+            raise HTTPException(status_code=401, detail="User with AUDITOR role cannot have action of create log")
 
         log = await PGCreation(db).create_new_log(
             log=payload,
@@ -98,6 +110,15 @@ async def get_logs(
     ),
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Get the range of logs (Tenant-scoped)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        skip (int): Number of records to skip
+        limit (int): Max records to return
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -137,6 +158,13 @@ async def export_logs(
     request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Export data logs retrieved in format of CSV file (Tenant-scoped)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -194,6 +222,14 @@ async def bulk_create_logs(
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Create bulk of logs on the fly (Tenant-scoped)
+
+    Args:
+        background_tasks (BackgroundTasks): an async task to handle background task for this request.
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -203,6 +239,13 @@ async def bulk_create_logs(
 
         tenant_id = token_data.get("tenant_id", None)
         user_id = token_data.get("user_id", None)
+        user_role = token_data.get("user_role", None)
+
+        if not tenant_id:
+            raise HTTPException(status_code=401, detail="Tenant id is invalid")
+
+        if user_role and user_role == UserRoleEnum.AUDITOR:
+            raise HTTPException(status_code=401, detail="User with AUDITOR role cannot have action of create bulk")
 
         logs: List[AuditLog] = await PGCreation(db).create_bulk_logs(
             logs=payload, tenant_id=tenant_id, user_id=user_id
@@ -243,6 +286,13 @@ async def cleanup_old_logs(
     request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Clean up retention logs api (Tenant-scoped)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -251,6 +301,14 @@ async def cleanup_old_logs(
             )
 
         tenant_id = token_data.get("tenant_id", None)
+        user_role = token_data.get("user_role", None)
+
+        if not tenant_id:
+            raise HTTPException(status_code=401, detail="Tenant id is invalid")
+
+        if user_role and user_role == UserRoleEnum.AUDITOR:
+            raise HTTPException(status_code=401, detail="User with AUDITOR role cannot have action on delete logs")
+
         deleted_count = await PGDeletion(db).cleanup_old_logs(
             tenant_id
         )
@@ -276,6 +334,13 @@ async def get_logs_stats(
     request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Generate statstistic data for logs assume (Tenant-scoped)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -284,6 +349,9 @@ async def get_logs_stats(
             )
 
         tenant_id = token_data.get("tenant_id", None)
+
+        if not tenant_id:
+            raise HTTPException(status_code=401, detail="Tenant id is invalid")
 
         stats = await PGRetrieve(db).get_logs_stats_by_tenant(
             tenant_id
@@ -313,12 +381,25 @@ async def get_logs(
     request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Get the range of logs by given id (Tenant-scoped)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        skip (int): Number of records to skip
+        limit (int): Max records to return
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
             raise HTTPException(
                 status_code=401, detail="Invalid or expired token."
             )
+        tenant_id = token_data.get("tenant_id", None)
+
+        if not tenant_id:
+            raise HTTPException(status_code=401, detail="Tenant id is invalid")
 
         logs = await PGRetrieve(db).retrieve_logs(
             tenant_id=token_data.get("tenant_id", None),

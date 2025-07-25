@@ -45,6 +45,13 @@ async def get_chat_history(
     request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Get conversation hisotry of agent chat (tenant-scoped)
+
+    Args:
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:
@@ -87,6 +94,14 @@ async def get_chat_response(
     token: TokenDependencies,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Get chat response from Agent chat
+
+    Args:
+        payload (GetChatbotPayload): request query of user about the information
+        token (TokenDependencies): JWT request for short-time authentication access
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         token_data = AuthenService.verify_token(token.credentials)
         if not token_data:

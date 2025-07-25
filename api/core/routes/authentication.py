@@ -29,20 +29,31 @@ Limiter = RATE_LIMITER.get_limiter()
     description="Create new tenant and user in that tenant",
 )
 @Limiter.limit(RATE_LIMITER.default_limit)
-async def create_tenant_and_user(
+async def create_user_associated_tenant(
     payload: CreateAccountPayload,
     request: Request,
     db: AsyncSession = Depends(async_get_db),
 ):
+    """Create a new user account based on tenant
+
+    Args:
+        payload (CreateAccountPayload): request user and tenant information needs to createdS
+        request (Request): HTTP request to checkup rate limit declaration
+        db (AsyncSession, optional): sessionmaker for each connection request. Defaults to Depends(async_get_db).
+    """
     try:
         tenant = Tenant(name=payload.tenant_name)
+
+        if not tenant:
+            raise HTTPException(status_code=401, detail="The tenant given is invalid!")
+
         user = User(
             username=payload.username,
             email=payload.email,
             tenant_id=tenant.id,
             role=payload.role,
         )
-        response = await AuthenService.create_new_tenant_and_user(
+        response = await AuthenService.create_new_user_account(
             tenant=tenant, user=user, db=db
         )
         if not response.get("status", False):
@@ -90,10 +101,10 @@ async def generate_new_access_token(
 
         # prepare the token data based on tenant and user data
         tenant = await PGRetrieve(db).retrieve_tenant(
-            tenant_name=payload.tenant_name
+            tenant_id=payload.tenant_id
         )
         user = await PGRetrieve(db).retrieve_user(
-            username=payload.username
+            user_id=payload.user_id
         )
 
         if not user or not tenant:

@@ -76,7 +76,7 @@ class AuthenService:
             )
 
     @staticmethod
-    async def create_new_tenant_and_user(
+    async def create_new_user_account(
         tenant: Tenant, user: User, db: AsyncSession
     ) -> dict:
         existed_tenant = await PGRetrieve(db).retrieve_tenant(

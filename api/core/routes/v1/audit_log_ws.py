@@ -10,6 +10,7 @@ router = APIRouter()
 
 @router.websocket("/stream")
 async def log_stream(websocket: WebSocket):
+    """Establish websocket connection which also request authetication access header attached for JWT"""
     auth = websocket.headers.get("authorization", "")
     scheme, _, token = auth.partition(" ")
     if scheme.lower() != "bearer" or not token:
