@@ -71,6 +71,7 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve logs: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return []
 
     async def retrieve_tenant(
@@ -93,6 +94,7 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve tenant: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def retrieve_user(
@@ -113,6 +115,7 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve user: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def retrieve_tenants(
@@ -145,6 +148,7 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve tenants: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return []
 
     async def get_logs_stats_by_tenant(
@@ -217,6 +221,7 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve stats: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def get_logs_stats_alert(
@@ -254,6 +259,7 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve stats alert: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def retrieve_chat_history(
@@ -288,4 +294,5 @@ class PGRetrieve:
             logger.error(
                 f"Failed to retrieve conversation: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return []
