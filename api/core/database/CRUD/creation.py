@@ -19,13 +19,20 @@ class PGCreation:
         self.db = db
 
     async def ensure_tenant_partition(self, tenant_id: str):
-        """Initi tenant partition table for audit_logs"""
-        partition_name = f"audit_logs_{tenant_id}"
-        sql = f"""
-        CREATE TABLE IF NOT EXISTS "{partition_name}"
-        PARTITION OF audit_logs FOR VALUES IN ('{tenant_id}');
-        """
-        await self.db.execute(text(sql))
+        try:
+            """Initi tenant partition table for audit_logs"""
+            partition_name = f"audit_logs_{tenant_id}"
+            sql = f"""
+            CREATE TABLE IF NOT EXISTS "{partition_name}"
+            PARTITION OF audit_logs FOR VALUES IN ('{tenant_id}');
+            """
+            await self.db.execute(text(sql))
+        except Exception:
+            logger.error(
+                f"Error when ensuring tenant partition for {tenant_id}: {traceback.format_exc()}"
+            )
+            await self.db.rollback()
+            return None
 
     async def create_bulk_logs(
         self,
@@ -65,18 +72,21 @@ class PGCreation:
             logger.error(
                 f"Invalid enum value error when creating bulk logs: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except SQLAlchemyError as e:
             logger.error(
                 f"Database error when creating bulk logs: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except Exception as e:
             logger.error(
                 f"Error when creating bulk logs: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def create_new_log(
@@ -108,18 +118,21 @@ class PGCreation:
             logger.error(
                 f"Invalid enum value error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except SQLAlchemyError as e:
             logger.error(
                 f"Database error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except Exception as e:
             logger.error(
                 f"Error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def create_new_session(
@@ -153,18 +166,21 @@ class PGCreation:
             logger.error(
                 f"Invalid enum value error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except SQLAlchemyError as e:
             logger.error(
                 f"Database error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except Exception as e:
             logger.error(
                 f"Error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def create_new_user(self, user: User) -> UserTable:
@@ -180,18 +196,21 @@ class PGCreation:
             logger.error(
                 f"Invalid enum value error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except SQLAlchemyError as e:
             logger.error(
                 f"Database error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except Exception as e:
             logger.error(
                 f"Error when creating log: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
     async def create_bulk_conversations(
@@ -216,16 +235,19 @@ class PGCreation:
             logger.error(
                 f"Invalid enum value error when creating bulk conversations: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except SQLAlchemyError as e:
             logger.error(
                 f"Database error when creating bulk conversations: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
 
         except Exception as e:
             logger.error(
                 f"Error when creating bulk conversations: {traceback.format_exc()}"
             )
+            await self.db.rollback()
             return None
