@@ -228,8 +228,7 @@ flowchart TD
     EXPERTISE["Expertise Agent"]
     TOOLS["RAG Tools"]
   end
-  UI["Dashboard Streamlit"] --> GATE["API Gateway"]
-  GATE --> JWT 
+  Client --> JWT
   JWT --> TA
   TA --> RATE
   RATE --> LOGS & EXPORT & SEARCH & STREAM & MASTER

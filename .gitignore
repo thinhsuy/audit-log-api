@@ -117,6 +117,7 @@ venv.bak/
 /site
 
 api/deployment.sh
+ui/deployment.sh
 
 # mypy
 .mypy_cache/
