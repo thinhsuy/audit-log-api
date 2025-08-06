@@ -6,12 +6,11 @@ from core.schemas.v1.enum import UserRoleEnum
 class CreateAccessTokenPayload(BaseModel):
     user_name: str
     tenant_name: str
-    expired_miniutes: Optional[int] = None
+    expired_miniutes: Optional[int] = 60
 
 
 class CreateAccessTokenResponse(BaseModel):
     message: str
-    access_token: Optional[str] = None
     session: Optional[dict] = None
 
 

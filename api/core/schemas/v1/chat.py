@@ -11,14 +11,20 @@ class Conversation(BaseObject):
     role: ChatRoleEnum
     content: str
     tenant_id: str = None
+    function_name: str = None
+    tool_call_id: str = None
     tool_calls: List[ChatCompletionMessageToolCall] = None
 
     def chat_format_dump(self) -> Dict:
-        format = {"role": self.role, "content": self.content}
-        if self.tool_calls:
-            format.update({"tool_calls": self.tool_calls})
-        return format
-
+        if self.role == ChatRoleEnum.TOOL:
+            return {
+                "tool_call_id": self.tool_call_id,
+                "role": self.role,
+                "name": self.function_name,
+                "content": self.content
+            }
+        else:
+            return {"role": self.role, "content": self.content, "tool_calls": self.tool_calls}
 
 class ConverationTable(Base):
     """Conversation table to store history of chat"""

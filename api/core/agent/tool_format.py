@@ -9,6 +9,9 @@ class ToolCallFormat(BaseModel):
     function_name: str
     content: str
 
+    def chat_format_dump(self):
+        return super().model_dump()
+
 
 class ToolResponseFormat(BaseModel):
     content: str

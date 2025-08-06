@@ -77,7 +77,6 @@ class SmartAgent:
         )
         tool_call_results: list[ToolResponseFormat] = []
         tool_call_trackback: list[ToolCallFormat] = []
-
         # try to loop the chain of thougt to get out the final response
         for _ in range(self.max_retry):
             response = await self.client.chat.completions.create(
@@ -158,16 +157,15 @@ class SmartAgent:
                             function_to_call(**function_args)
                         )
 
-                    tool_called = ToolCallFormat(
+                    tool_call_results.append(function_response)
+                    # tool_call_trackback.append(tool_called)
+                    # extend conversation with function response
+                    conversation.append(Conversation(
                         tool_call_id=tool_call.id,
-                        role="tool",
+                        role=ChatRoleEnum.TOOL,
                         function_name=function_name,
                         content=function_response.content,
-                    )
-                    tool_call_results.append(function_response)
-                    tool_call_trackback.append(tool_called)
-                    # extend conversation with function response
-                    conversation.append(tool_called)
+                    ))
                 continue
             else:
                 break  # if no function call break out of loop as this indicates that the agent finished the research and is ready to respond to the user

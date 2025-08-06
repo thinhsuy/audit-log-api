@@ -1,5 +1,5 @@
 from pandasai.connectors import PostgreSQLConnector
-from pandasai import SmartDataframe, SmartDatalake
+from pandasai import SmartDataframe, SmartDatalake, Agent
 from core.config import (
     DB_HOST,
     DB_PORT,
@@ -16,7 +16,6 @@ from pandasai.llm.azure_openai import AzureOpenAI
 from typing import List, Literal
 from core.config import logger
 from pydantic import BaseModel
-
 
 class Condition(BaseModel):
     column: str

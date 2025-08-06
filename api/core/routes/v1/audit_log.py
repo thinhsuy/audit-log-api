@@ -54,14 +54,8 @@ async def create_log_entry(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
-        
         if token_data.get("role", "") == UserRoleEnum.AUDITOR:
             raise HTTPException(status_code=401, detail="User with AUDITOR role cannot have action of create log")
-
         log = await PGCreation(db).create_new_log(
             log=payload,
             tenant_id=token_data.get("tenant_id", None),
@@ -102,13 +96,13 @@ async def create_log_entry(
 async def get_logs(
     token: TokenDependencies,
     request: Request,
+    db: AsyncSession = Depends(async_get_db),
     skip: int = Query(
-        None, ge=0, description="Number of records to skip"
+        None, description="Number of records to skip"
     ),
     limit: int = Query(
-        None, ge=1, le=1000, description="Max records to return"
+        None, le=1000, description="Max records to return"
     ),
-    db: AsyncSession = Depends(async_get_db),
 ):
     """Get the range of logs (Tenant-scoped)
 
@@ -121,15 +115,10 @@ async def get_logs(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
-        
+
         tenant_id = token_data.get("tenant_id", None)
         if not tenant_id:
             raise HTTPException(status_code=401, detail="Tenant id is invalid")
-
 
         logs = await PGRetrieve(db).retrieve_logs(
             tenant_id=tenant_id,
@@ -172,10 +161,6 @@ async def export_logs(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
 
         tenant_id = token_data.get("tenant_id")
         logs = await PGRetrieve(db).retrieve_logs(tenant_id=tenant_id)
@@ -240,10 +225,6 @@ async def bulk_create_logs(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
 
         tenant_id = token_data.get("tenant_id", None)
         user_id = token_data.get("user_id", None)
@@ -292,6 +273,9 @@ async def bulk_create_logs(
 async def cleanup_old_logs(
     token: TokenDependencies,
     request: Request,
+    retention_hours: int = Query(
+        24, ge=0, description="Retention hours for cleanup"
+    ),
     db: AsyncSession = Depends(async_get_db),
 ):
     """Clean up retention logs api (Tenant-scoped)
@@ -303,10 +287,6 @@ async def cleanup_old_logs(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
 
         tenant_id = token_data.get("tenant_id", None)
         user_role = token_data.get("user_role", None)
@@ -318,18 +298,19 @@ async def cleanup_old_logs(
             raise HTTPException(status_code=401, detail="User with AUDITOR role cannot have action on delete logs")
 
         deleted_count = await PGDeletion(db).cleanup_old_logs(
-            tenant_id
+            tenant_id, retention_hours=retention_hours
         )
 
         return CleanupLogResponse(
             message=f"Cleanup completed successfully! {deleted_count} logs deleted.",
             deleted_count=deleted_count,
         )
+    except HTTPException:
+        raise
     except Exception:
         message = "Failed to cleanup old logs!"
         logger.error(f"{message}: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=message)
-
 
 @router.get(
     "/stats",
@@ -351,10 +332,6 @@ async def get_logs_stats(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
 
         tenant_id = token_data.get("tenant_id", None)
 

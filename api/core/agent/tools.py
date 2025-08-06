@@ -4,7 +4,7 @@ from core.agent.tool_format import (
 )
 from textwrap import dedent
 from core.agent.pandas_agent import Pandas_Agent, Connector, Condition
-
+from core.agent.prompt import PANDAS_ADDITIONAL_PROMPT
 
 def params_format(
     name: str, type: str, description: str, required: bool = True
@@ -72,7 +72,7 @@ async def search_data_postgres(
     ).create()
 
     search_response = Pandas_Agent.get_search(
-        query=user_query,
+        query=user_query + PANDAS_ADDITIONAL_PROMPT,
         connectors=[logs_connector, tenants_connector],
     )
     return ToolResponseFormat(

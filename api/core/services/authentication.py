@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
 from typing import Optional, Tuple, Dict, Any
-from jose import JWTError
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from core.config import (
     JWT_SECRET_KEY,
     JWT_ALGORITHM,
@@ -42,9 +42,13 @@ class AuthenService:
                     detail="Invalid token: missing tenant_id.",
                 )
             return payload
-        except JWTError as e:
+        except ExpiredSignatureError:
             raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
+                status_code=401, detail="Token has expired."
+            )
+        except InvalidTokenError:
+            raise HTTPException(
+                status_code=401, detail="Invalid token."
             )
 
     @staticmethod
@@ -69,10 +73,13 @@ class AuthenService:
             )
             return new_token, payload
 
-        except JWTError:
+        except ExpiredSignatureError:
             raise HTTPException(
-                status_code=401,
-                detail="Invalid or expired refresh token.",
+                status_code=401, detail="Token has expired."
+            )
+        except InvalidTokenError:
+            raise HTTPException(
+                status_code=401, detail="Invalid token."
             )
 
     @staticmethod
@@ -120,5 +127,5 @@ class AuthenService:
         return await PGCreation(db).create_new_session(session)
 
     @staticmethod
-    async def is_admin_role(role: str) -> bool:
+    def is_admin_role(role: str) -> bool:
         return role == UserRoleEnum.ADMIN

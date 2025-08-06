@@ -36,6 +36,7 @@ DB_NAME = os.environ.get("DBNAME", None)
 AUDIT_USER_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 PANDAS_API_KEY = os.environ.get("PANDAS_API_KEY", None)
+PAI_KEY = os.environ.get("PAI_KEY", None)
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_REGION = os.environ.get("AWS_REGION")

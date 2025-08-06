@@ -37,4 +37,5 @@ async def async_get_db(request: Request):
             yield session
         except Exception as ex:
             await session.rollback()
-            raise HTTPException(500, detail="Database error") from ex
+            raise
+            # raise HTTPException(500, detail="Database error") from ex

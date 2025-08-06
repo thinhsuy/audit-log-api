@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.schemas.payloads.authentication import (
     CreateAccessTokenPayload,
@@ -24,7 +24,7 @@ Limiter = RATE_LIMITER.get_limiter()
 
 
 @router.post(
-    "/create-account",
+    "/user-account",
     response_model=TenantUserCreateResponse,
     description="Create new tenant and user in that tenant",
 )
@@ -77,41 +77,52 @@ async def create_user_associated_tenant(
         return TenantUserCreateResponse(message=message)
 
 
-@router.post(
-    "/create-access-token", response_model=CreateAccessTokenResponse
+@router.get(
+    "/access-token", response_model=CreateAccessTokenResponse
 )
 @Limiter.limit(RATE_LIMITER.default_limit)
 async def generate_new_access_token(
-    payload: CreateAccessTokenPayload,
     request: Request,
+    user_id: str = Query(
+        None, description="User Id to create session"
+    ),
+    expired_miniutes: int = Query(
+        60, ge=1, description="Time expired of access token count from now"
+    ),
     db: AsyncSession = Depends(async_get_db),
 ):
     """
     Create new session to pg_db and then generate an access token
     """
     try:
+        if not user_id:
+            raise HTTPException(status_code=422, detail="User id cannot be empty")
+
         # extract the time of expiration
         time_now = datetime.now(VIETNAM_TZ)
         expired_miniutes = (
-            payload.expired_miniutes
-            if payload.expired_miniutes
+            expired_miniutes
+            if expired_miniutes
             else ACCESS_TOKEN_EXPIRE_MINUTES
         )
         time_expired = time_now + timedelta(minutes=expired_miniutes)
 
         # prepare the token data based on tenant and user data
-        tenant = await PGRetrieve(db).retrieve_tenant(
-            tenant_name=payload.tenant_name
-        )
         user = await PGRetrieve(db).retrieve_user(
-            username=payload.user_name
+            user_id=user_id
         )
 
-        if not user or not tenant:
-            print("This tenant or user is invalid!")
+        if not user:
+            raise HTTPException(status_code=422, detail="Cannot find user based on given id")
+    
+        tenant = await PGRetrieve(db).retrieve_tenant(
+            tenant_id=user.tenant_id
+        )
+
+        if not tenant:
             raise HTTPException(
-                status_code=401,
-                detail="This tenant or user is invalid!",
+                status_code=422,
+                detail="User have no tenant valid related!",
             )
 
         token_data = {}
@@ -144,7 +155,6 @@ async def generate_new_access_token(
 
         return CreateAccessTokenResponse(
             message="Create access token successfully!",
-            access_token=access_token,
             session=new_session.model_dump(),
         )
 
@@ -152,7 +162,7 @@ async def generate_new_access_token(
         raise
     except Exception:
         message = (
-            f"Failed to generate token for user {payload.username}"
+            f"Failed to generate token for user {user_id}"
         )
         print(message, traceback.format_exc())
         logger.error(f"{message}: {traceback.format_exc()}")

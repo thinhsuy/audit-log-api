@@ -14,7 +14,17 @@ MASTER_PROMPT = """
 
 # Output format sample:
     - You MUST use correct JSON format, DO NOT use {{'en': '...'}}
-    - Sample corrected output: {{"reponse": "**your STRING MARKDOWN format answer here**"}}
+    - Sample corrected output: {{"answer": "**your STRING MARKDOWN format answer here**"}}
 
 # Conversation context:
+"""
+
+PANDAS_ADDITIONAL_PROMPT = """
+\n
+### Instructions for generating SQL queries
+- When a user asks about a time range (e.g., "last 2 days", "last week"), you MUST convert the natural language into a valid SQL expression.
+- You MUST use the `NOW()` function and the `INTERVAL` keyword for all time-based filtering.
+- For example, to find logs from the last 2 days, your query MUST include: `timestamp >= NOW() - INTERVAL '2 days'`
+- DO NOT use any natural language strings directly in the SQL query for time filtering. For example, NEVER use `timestamp >= 'two_days_ago'`.
+- Ensure all other parts of the query, such as filtering by 'severity', are also correct.
 """

@@ -19,6 +19,8 @@ from core.database.CRUD import PGCreation, PGRetrieve
 from core.config import logger
 import traceback
 from core.limiter import RATE_LIMITER
+import json
+import asyncio
 
 router = APIRouter()
 Limiter = RATE_LIMITER.get_limiter()
@@ -76,6 +78,7 @@ async def get_chat_history(
 
     except HTTPException:
         raise
+
     except Exception:
         message = "Failed to get chat history from chatbot agent!"
         logger.error(f"{message}: {traceback.format_exc()}")
@@ -104,16 +107,7 @@ async def get_chat_response(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
-
         tenant_id = token_data.get("tenant_id", None)
-        if not tenant_id:
-            raise HTTPException(
-                status_code=401, detail="Invalid tenant_id."
-            )
 
         history = await PGRetrieve(db).retrieve_chat_history(
             tenant_id=tenant_id,
@@ -133,17 +127,24 @@ async def get_chat_response(
         )
 
         if response:
-            await PGCreation(db).create_bulk_conversations(
-                tenant_id=tenant_id,
-                conversations=[
-                    Conversation(
-                        role=ChatRoleEnum.USER, content=payload.query
-                    ),
-                    Conversation(
-                        role=ChatRoleEnum.ASSISTANT,
-                        content=response.content,
-                    ),
-                ],
+            try:
+                response.content = json.loads(response.content).get("answer")
+            except Exception:
+                logger.warning(f"Cannot convert json package of Agent response: {traceback.format_exc()}")
+
+            asyncio.create_task(
+                PGCreation(db).create_bulk_conversations(
+                    tenant_id=tenant_id,
+                    conversations=[
+                        Conversation(
+                            role=ChatRoleEnum.USER, content=payload.query
+                        ),
+                        Conversation(
+                            role=ChatRoleEnum.ASSISTANT,
+                            content=response.content,
+                        ),
+                    ],
+                )
             )
             return GetChatbotResponse(
                 message="Get response successfully!", response=response

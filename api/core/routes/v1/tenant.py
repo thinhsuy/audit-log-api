@@ -35,15 +35,11 @@ async def list_out_tenants(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
-
-        if not AuthenService.is_admin_role(token_data.get("role", "")):
+        user_role = token_data.get("role", "")
+        if not AuthenService.is_admin_role(user_role):
             raise HTTPException(
                 status_code=401,
-                detail="Role token is invalid and not allowed.",
+                detail=f"Role {user_role} is not authorized for this API.",
             )
 
         tenants = await PGRetrieve(db).retrieve_tenants()
@@ -83,15 +79,12 @@ async def create_tenant(
     """
     try:
         token_data = AuthenService.verify_token(token.credentials)
-        if not token_data:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token."
-            )
 
-        if not AuthenService.is_admin_role(token_data.get("role", "")):
+        user_role = token_data.get("role", "")
+        if not AuthenService.is_admin_role(user_role):
             raise HTTPException(
                 status_code=401,
-                detail="Role token is invalid and not allowed.",
+                detail=f"Role {user_role} is not authorized for this API.",
             )
 
         new_tenant = Tenant(name=payload.tenant_name)

@@ -10,12 +10,12 @@ class PGDeletion:
         self.db: AsyncSession = db
 
     async def cleanup_old_logs(
-        self, tenant_id: str, retention_days: int = 1
+        self, tenant_id: str, retention_hours: int
     ) -> int:
         try:
             """Clean up `retention days` logs based on tenant_id"""
             cutoff_date = datetime.now(VIETNAM_TZ) - timedelta(
-                days=retention_days
+                hours=retention_hours
             )
             query = delete(AuditLogTable).where(
                 AuditLogTable.tenant_id == tenant_id,
