@@ -2,28 +2,27 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install Poetry
-RUN pip install --upgrade pip
-RUN pip install poetry
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install poetry
 
-# Configure Poetry
+COPY pyproject.toml /app/
+
 RUN poetry config virtualenvs.create false
 
-# Copy necessary files
-COPY pyproject.toml README.md /app/
-COPY core /app/core
-
-RUN pip install --no-cache-dir
-
-RUN poetry install --no-interaction --no-ansi
+RUN poetry install --no-dev --no-interaction --no-ansi
 
 COPY . /app
 
-EXPOSE 8080
+EXPOSE 8501
 
-# Set environment variables
 ENV PYTHONUNBUFFERED=1
 
-CMD ["streamlit", "run", "core/main.py", "--server.port=8501", "--server.enableCORS=false"]
+WORKDIR /app/core
+
+# Command to run the Streamlit app
+CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]

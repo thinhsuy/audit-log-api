@@ -30,6 +30,9 @@ conda actiate yourenv
 git clone https://github.com/thinhsuy/audit-log-api.git
 cd audit-log-api
 
+# [Optional]: In-case your python.keyring block the `blinker`
+# export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+
 # install and start API
 pip install poetry
 poetry config virtualenvs.create false

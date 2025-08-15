@@ -3,11 +3,6 @@ from core.config import logger
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 import traceback
 
-from sqlalchemy import text
-from core.config import logger
-from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
-import traceback
-
 
 class PGTrigger:
     def __init__(
